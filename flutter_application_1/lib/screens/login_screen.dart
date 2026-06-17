@@ -15,7 +15,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool mostrarSenha = false;
 
-
   final Color verde = const Color(0xFFC6FF00);
 
   @override
@@ -209,23 +208,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    onPressed: () async {
-                      bool usuarioExiste = await AuthService().login(
-                        usuarioController.text,
-                        senhaController.text,
-                      );
-
-                      if (usuarioExiste) {
-                        if (!context.mounted) return;
-
-                        Navigator.pushReplacementNamed(context, '/home');
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Usuário não encontrado'),
-                          ),
-                        );
-                      }
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/objective');
                     },
 
                     child: const Text(

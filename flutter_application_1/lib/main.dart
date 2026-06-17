@@ -29,7 +29,7 @@ class FitPlanApp extends StatelessWidget {
       theme: AppTheme.darkTheme,
 
       // 🔥 PARA TESTE (pode trocar depois)
-      initialRoute: '/register',
+     initialRoute: '/login',
 
       routes: {
         '/splash': (context) => const SplashScreen(),

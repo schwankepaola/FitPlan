@@ -11,15 +11,22 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
 
   final nameController = TextEditingController();
-  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
   final Color verde = const Color(0xFFC6FF00);
 
-  Future<void> register() async {
+ Future<void> register() async {
   if (_formKey.currentState!.validate()) {
+
+    await AuthService().cadastrar(
+  nameController.text,
+  passwordController.text,
+);
+
+    if (!mounted) return;
+
     Navigator.pushReplacementNamed(
       context,
       '/objective',
@@ -165,20 +172,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                     decoration: campoDecoracao(
                       "Seu nome de usuário",
-                    ),
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  campoTitulo("EMAIL"),
-
-                  TextFormField(
-                    controller: emailController,
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
-                    decoration: campoDecoracao(
-                      "Digite seu email",
                     ),
                   ),
 
