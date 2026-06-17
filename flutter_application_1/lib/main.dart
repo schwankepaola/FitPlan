@@ -29,7 +29,7 @@ class FitPlanApp extends StatelessWidget {
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),
-        '/login': (context) => const LoginScreen(),
+        '/login': (context) => LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/objective': (context) => const ObjectiveScreen(),
         '/days': (context) => const DaysPerWeekScreen(),
