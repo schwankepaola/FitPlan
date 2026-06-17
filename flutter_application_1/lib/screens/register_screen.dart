@@ -20,22 +20,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> register() async {
 
-    if (_formKey.currentState!.validate()) {
+  Navigator.pushReplacementNamed(
+    context,
+    '/objective',
+  );
 
-      await AuthService().cadastrar(
-        nameController.text,
-        emailController.text,
-        passwordController.text,
-      );
-
-      if (!mounted) return;
-
-      Navigator.pushReplacementNamed(
-        context,
-        '/objective',
-      );
-    }
-  }
+}
 
   @override
   Widget build(BuildContext context) {

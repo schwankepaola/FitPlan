@@ -4,70 +4,181 @@ class DaysPerWeekScreen extends StatefulWidget {
   const DaysPerWeekScreen({super.key});
 
   @override
-  State<DaysPerWeekScreen> createState() => _DaysPerWeekScreenState();
+  State<DaysPerWeekScreen> createState() =>
+      _DaysPerWeekScreenState();
 }
 
-class _DaysPerWeekScreenState extends State<DaysPerWeekScreen> {
+class _DaysPerWeekScreenState
+    extends State<DaysPerWeekScreen> {
 
-  int selectedDays = 3;
+  int diasSelecionados = 1; // começa no 1
+
+  final Color verde = const Color(0xFFC6FF00);
+
+  Widget botaoDia(String texto, int valor) {
+    bool ativo = diasSelecionados == valor;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          diasSelecionados = valor;
+        });
+      },
+      child: Container(
+        width: double.infinity,
+        height: 60,
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: ativo ? verde : const Color(0xff111111),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Center(
+          child: Text(
+            texto,
+            style: TextStyle(
+              color: ativo ? Colors.black : Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Dias de Treino"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              children: [
 
-            const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-            const Text(
-              "Quantos dias por semana você pretende treinar?",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            DropdownButton<int>(
-              value: selectedDays,
-              isExpanded: true,
-              items: List.generate(
-                7,
-                (index) => DropdownMenuItem(
-                  value: index + 1,
-                  child: Text("${index + 1} dias"),
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: "FIT",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 42,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "PLAN",
+                          style: TextStyle(
+                            color: verde,
+                            fontSize: 42,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  selectedDays = value!;
-                });
-              },
-            ),
 
-            const Spacer(),
+                const SizedBox(height: 8),
 
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/workout');
-                },
-                child: const Text(
-                  "CONTINUAR",
-                  style: TextStyle(fontSize: 18),
+                const Text(
+                  "Plano de treino personalizado",
+                  style: TextStyle(color: Colors.grey),
                 ),
-              ),
+
+                const SizedBox(height: 30),
+
+                Row(
+                  children: [
+                    Expanded(child: Container(height: 4, color: verde)),
+                    const SizedBox(width: 5),
+                    Expanded(child: Container(height: 4, color: verde)),
+                    const SizedBox(width: 5),
+                    Expanded(child: Container(height: 4, color: verde)),
+                  ],
+                ),
+
+                const SizedBox(height: 40),
+
+                const Text(
+                  "Dias por semana",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 34,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 10),
+
+                const Text(
+                  "Quantos dias você pode treinar?",
+                  style: TextStyle(color: Colors.grey),
+                ),
+
+                const SizedBox(height: 30),
+
+                // AGORA VAI DE 1 A 7
+                botaoDia("1 Dia por Semana", 1),
+                botaoDia("2 Dias por Semana", 2),
+                botaoDia("3 Dias por Semana", 3),
+                botaoDia("4 Dias por Semana", 4),
+                botaoDia("5 Dias por Semana", 5),
+                botaoDia("6 Dias por Semana", 6),
+                botaoDia("7 Dias por Semana", 7),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Voltar",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+
+                    const SizedBox(width: 20),
+
+                    Expanded(
+                      child: SizedBox(
+                        height: 60,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: verde,
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/workout_done',
+                            );
+                          },
+                          child: const Text(
+                            "GERAR MEU PLANO",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

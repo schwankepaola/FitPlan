@@ -13,6 +13,7 @@ import 'screens/profile_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'theme/app_theme.dart';
 
+
 void main() {
   runApp(const FitPlanApp());
 }
