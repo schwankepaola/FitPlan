@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
-  final TextEditingController usuarioController =
-      TextEditingController();
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
 
-  final TextEditingController senhaController =
-      TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController usuarioController = TextEditingController();
+
+  final TextEditingController senhaController = TextEditingController();
+
+  bool mostrarSenha = false;
+
 
   final Color verde = const Color(0xFFC6FF00);
 
@@ -18,13 +25,9 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 32,
-              vertical: 30,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 30),
             child: Column(
               children: [
-
                 const SizedBox(height: 20),
 
                 Container(
@@ -73,9 +76,7 @@ class LoginScreen extends StatelessWidget {
 
                 const Text(
                   "Plano de treino personalizado",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(color: Colors.grey),
                 ),
 
                 const SizedBox(height: 40),
@@ -88,7 +89,6 @@ class LoginScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-
                       Expanded(
                         child: Container(
                           margin: const EdgeInsets.all(4),
@@ -111,20 +111,16 @@ class LoginScreen extends StatelessWidget {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context,
-                                '/register');
+                            Navigator.pushNamed(context, '/register');
                           },
                           child: const Center(
                             child: Text(
                               "Criar conta",
-                              style: TextStyle(
-                                color: Colors.grey,
-                              ),
+                              style: TextStyle(color: Colors.grey),
                             ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -149,13 +145,11 @@ class LoginScreen extends StatelessWidget {
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: "Seu nome de usuário",
-                    hintStyle:
-                        const TextStyle(color: Colors.grey),
+                    hintStyle: const TextStyle(color: Colors.grey),
                     filled: true,
                     fillColor: const Color(0xff151515),
                     border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide.none,
                     ),
                   ),
@@ -177,26 +171,31 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 8),
 
                 TextField(
-                  obscureText: true,
+                  controller: senhaController,
+                  obscureText: !mostrarSenha,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: "Mínimo 4 caracteres",
-                    hintStyle:
-                        const TextStyle(color: Colors.grey),
-                    suffixIcon: const Icon(
-                      Icons.visibility_outlined,
-                      color: Colors.grey,
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        mostrarSenha ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          mostrarSenha = !mostrarSenha;
+                        });
+                      },
                     ),
                     filled: true,
                     fillColor: const Color(0xff151515),
                     border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 25),
 
                 SizedBox(
@@ -207,11 +206,28 @@ class LoginScreen extends StatelessWidget {
                       backgroundColor: verde,
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      bool usuarioExiste = await AuthService().login(
+                        usuarioController.text,
+                        senhaController.text,
+                      );
+
+                      if (usuarioExiste) {
+                        if (!context.mounted) return;
+
+                        Navigator.pushReplacementNamed(context, '/home');
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Usuário não encontrado'),
+                          ),
+                        );
+                      }
+                    },
+
                     child: const Text(
                       "ENTRAR",
                       style: TextStyle(
@@ -226,9 +242,7 @@ class LoginScreen extends StatelessWidget {
 
                 const Text(
                   "Dados salvos localmente no dispositivo.",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(color: Colors.grey),
                 ),
               ],
             ),
