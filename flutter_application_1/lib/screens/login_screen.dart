@@ -208,10 +208,24 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/objective');
-                    },
+                    onPressed: () async {
+                      bool usuarioExiste = await AuthService().login(
+                        usuarioController.text,
+                        senhaController.text,
+                      );
 
+                      if (!mounted) return;
+
+                      if (usuarioExiste) {
+                        Navigator.pushReplacementNamed(context, '/objective');
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Usuário ou senha incorretos'),
+                          ),
+                        );
+                      }
+                    },
                     child: const Text(
                       "ENTRAR",
                       style: TextStyle(
