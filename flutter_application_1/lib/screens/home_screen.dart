@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../notification_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,13 +8,27 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: const Center(
-        child: Text(
-          'HOME FUNCIONANDO',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-          ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'HOME FUNCIONANDO',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 30,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                NotificationService.showTestNotification();
+              },
+              child: const Text("Testar notificação"),
+            ),
+          ],
         ),
       ),
     );

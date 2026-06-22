@@ -13,8 +13,12 @@ import 'screens/alerts_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'theme/app_theme.dart';
+import 'notification_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
+
   runApp(const FitPlanApp());
 }
 
@@ -28,8 +32,7 @@ class FitPlanApp extends StatelessWidget {
       title: 'FITPLAN',
       theme: AppTheme.darkTheme,
 
-      // 🔥 PARA TESTE (pode trocar depois)
-     initialRoute: '/login',
+      initialRoute: '/login',
 
       routes: {
         '/splash': (context) => const SplashScreen(),

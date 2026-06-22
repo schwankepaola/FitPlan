@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../notification_service.dart';
 
 class WorkoutAssignmentScreen extends StatelessWidget {
   const WorkoutAssignmentScreen({super.key});
@@ -57,6 +58,10 @@ class WorkoutAssignmentScreen extends StatelessWidget {
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
+                  // 💥 MARCA TREINO COMO FEITO
+                  NotificationService.markWorkoutDone();
+
+                  // vai para tela de conclusão
                   Navigator.pushNamed(
                     context,
                     '/workout_done',
