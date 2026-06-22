@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
@@ -17,6 +20,13 @@ import 'notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // SQLite para Windows/Linux
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
   await NotificationService.init();
 
   runApp(const FitPlanApp());
@@ -31,9 +41,7 @@ class FitPlanApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FITPLAN',
       theme: AppTheme.darkTheme,
-
       initialRoute: '/login',
-
       routes: {
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
@@ -41,12 +49,14 @@ class FitPlanApp extends StatelessWidget {
         '/objective': (context) => const ObjectiveScreen(),
         '/days': (context) => const DaysPerWeekScreen(),
         '/workout': (context) => const WorkoutAssignmentScreen(),
-        '/workout_done': (context) => const WorkoutAssignmentCompleteScreen(),
+        '/workout_done': (context) =>
+            const WorkoutAssignmentCompleteScreen(),
         '/home': (context) => const HomeScreen(),
         '/history': (context) => const HistoryScreen(),
         '/alerts': (context) => const AlertsScreen(),
         '/profile': (context) => const ProfileScreen(),
-        '/notifications': (context) => const NotificationSettingsScreen(),
+        '/notifications': (context) =>
+            const NotificationSettingsScreen(),
       },
     );
   }

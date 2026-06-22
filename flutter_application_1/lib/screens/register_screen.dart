@@ -9,7 +9,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -17,40 +16,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final Color verde = const Color(0xFFC6FF00);
 
- Future<void> register() async {
-  if (_formKey.currentState!.validate()) {
+  Future<void> register() async {
+    if (_formKey.currentState!.validate()) {
+      await AuthService().cadastrar(
+        nameController.text,
+        passwordController.text,
+      );
 
-    await AuthService().cadastrar(
-  nameController.text,
-  passwordController.text,
-);
+      if (!mounted) return;
 
-    if (!mounted) return;
-
-    Navigator.pushReplacementNamed(
-      context,
-      '/objective',
-    );
+      Navigator.pushReplacementNamed(context, '/objective');
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 32,
-              vertical: 25,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 25),
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
-
                   const SizedBox(height: 10),
 
                   Container(
@@ -101,9 +91,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   const Text(
                     "Plano de treino personalizado",
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(color: Colors.grey),
                   ),
 
                   const SizedBox(height: 35),
@@ -116,7 +104,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     child: Row(
                       children: [
-
                         Expanded(
                           child: InkWell(
                             onTap: () {
@@ -125,9 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             child: const Center(
                               child: Text(
                                 "Entrar",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
+                                style: TextStyle(color: Colors.grey),
                               ),
                             ),
                           ),
@@ -161,18 +146,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   TextFormField(
                     controller: nameController,
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
+                    style: const TextStyle(color: Colors.white),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Digite seu usuário";
                       }
                       return null;
                     },
-                    decoration: campoDecoracao(
-                      "Seu nome de usuário",
-                    ),
+                    decoration: campoDecoracao("Seu nome de usuário"),
                   ),
 
                   const SizedBox(height: 25),
@@ -182,12 +163,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   TextFormField(
                     controller: passwordController,
                     obscureText: true,
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
-                    decoration: campoDecoracao(
-                      "Mínimo 4 caracteres",
-                    ).copyWith(
+                    style: const TextStyle(color: Colors.white),
+                    decoration: campoDecoracao("Mínimo 4 caracteres").copyWith(
                       suffixIcon: const Icon(
                         Icons.visibility_outlined,
                         color: Colors.grey,
@@ -201,7 +178,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     width: double.infinity,
                     height: 60,
                     child: ElevatedButton.icon(
-                      onPressed: register,
+                      onPressed: () async {
+                        try {
+                          await AuthService().cadastrar(
+                            nameController.text,
+                            passwordController.text,
+                          );
+
+                          print("USUÁRIO SALVO!");
+
+                          if (!mounted) return;
+
+                          Navigator.pushReplacementNamed(context, '/objective');
+                        } catch (e) {
+                          print("ERRO: $e");
+
+                          if (!mounted) return;
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Erro ao cadastrar: $e")),
+                          );
+                        }
+                      },
                       icon: const Icon(
                         Icons.person_add_alt_1,
                         color: Colors.black,
@@ -217,8 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         backgroundColor: verde,
                         foregroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
                     ),
@@ -228,9 +225,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   const Text(
                     "Dados salvos localmente no dispositivo.",
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(color: Colors.grey),
                   ),
                 ],
               ),
@@ -260,9 +255,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   InputDecoration campoDecoracao(String hint) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(
-        color: Colors.grey,
-      ),
+      hintStyle: const TextStyle(color: Colors.grey),
       filled: true,
       fillColor: const Color(0xff151515),
       border: OutlineInputBorder(
