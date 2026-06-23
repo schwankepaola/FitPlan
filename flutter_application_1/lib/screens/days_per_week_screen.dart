@@ -4,19 +4,16 @@ class DaysPerWeekScreen extends StatefulWidget {
   const DaysPerWeekScreen({super.key});
 
   @override
-  State<DaysPerWeekScreen> createState() =>
-      _DaysPerWeekScreenState();
+  State<DaysPerWeekScreen> createState() => _DaysPerWeekScreenState();
 }
 
-class _DaysPerWeekScreenState
-    extends State<DaysPerWeekScreen> {
-
-  int diasSelecionados = 1; // começa no 1
+class _DaysPerWeekScreenState extends State<DaysPerWeekScreen> {
+  int diasSelecionados = 1;
 
   final Color verde = const Color(0xFFC6FF00);
 
   Widget botaoDia(String texto, int valor) {
-    bool ativo = diasSelecionados == valor;
+    final bool ativo = diasSelecionados == valor;
 
     return GestureDetector(
       onTap: () {
@@ -31,6 +28,9 @@ class _DaysPerWeekScreenState
         decoration: BoxDecoration(
           color: ativo ? verde : const Color(0xff111111),
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: ativo ? verde : Colors.white10,
+          ),
         ),
         child: Center(
           child: Text(
@@ -56,9 +56,7 @@ class _DaysPerWeekScreenState
             padding: const EdgeInsets.all(28),
             child: Column(
               children: [
-
                 const SizedBox(height: 20),
-
                 Center(
                   child: RichText(
                     text: TextSpan(
@@ -74,7 +72,7 @@ class _DaysPerWeekScreenState
                         TextSpan(
                           text: "PLAN",
                           style: TextStyle(
-                            color: verde,
+                            color: Color(0xFFC6FF00),
                             fontSize: 42,
                             fontWeight: FontWeight.bold,
                           ),
@@ -83,28 +81,25 @@ class _DaysPerWeekScreenState
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
                 const Text(
                   "Plano de treino personalizado",
                   style: TextStyle(color: Colors.grey),
                 ),
-
                 const SizedBox(height: 30),
-
                 Row(
                   children: [
-                    Expanded(child: Container(height: 4, color: verde)),
+                    Expanded(
+                        child: Container(height: 4, color: Color(0xFFC6FF00))),
                     const SizedBox(width: 5),
-                    Expanded(child: Container(height: 4, color: verde)),
+                    Expanded(
+                        child: Container(height: 4, color: Color(0xFFC6FF00))),
                     const SizedBox(width: 5),
-                    Expanded(child: Container(height: 4, color: verde)),
+                    Expanded(
+                        child: Container(height: 4, color: Color(0xFFC6FF00))),
                   ],
                 ),
-
                 const SizedBox(height: 40),
-
                 const Text(
                   "Dias por semana",
                   style: TextStyle(
@@ -112,19 +107,13 @@ class _DaysPerWeekScreenState
                     fontSize: 34,
                     fontWeight: FontWeight.bold,
                   ),
-                  textAlign: TextAlign.center,
                 ),
-
                 const SizedBox(height: 10),
-
                 const Text(
                   "Quantos dias você pode treinar?",
                   style: TextStyle(color: Colors.grey),
                 ),
-
                 const SizedBox(height: 30),
-
-                // AGORA VAI DE 1 A 7
                 botaoDia("1 Dia por Semana", 1),
                 botaoDia("2 Dias por Semana", 2),
                 botaoDia("3 Dias por Semana", 3),
@@ -132,9 +121,7 @@ class _DaysPerWeekScreenState
                 botaoDia("5 Dias por Semana", 5),
                 botaoDia("6 Dias por Semana", 6),
                 botaoDia("7 Dias por Semana", 7),
-
                 const SizedBox(height: 20),
-
                 Row(
                   children: [
                     TextButton(
@@ -146,15 +133,13 @@ class _DaysPerWeekScreenState
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
-
                     const SizedBox(width: 20),
-
                     Expanded(
                       child: SizedBox(
                         height: 60,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: verde,
+                            backgroundColor: Color(0xFFC6FF00),
                             foregroundColor: Colors.black,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
@@ -163,7 +148,8 @@ class _DaysPerWeekScreenState
                           onPressed: () {
                             Navigator.pushNamed(
                               context,
-                              '/workout_done',
+                              '/workout',
+                              arguments: diasSelecionados,
                             );
                           },
                           child: const Text(
@@ -175,7 +161,6 @@ class _DaysPerWeekScreenState
                     ),
                   ],
                 ),
-
               ],
             ),
           ),

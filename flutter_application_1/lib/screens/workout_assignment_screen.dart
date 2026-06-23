@@ -4,73 +4,60 @@ import '../services/notification_service.dart';
 class WorkoutAssignmentScreen extends StatelessWidget {
   const WorkoutAssignmentScreen({super.key});
 
+  List<String> gerarTreino(int dias) {
+    final treinos = [
+      "Peito e Tríceps",
+      "Costas e Bíceps",
+      "Pernas",
+      "Ombros",
+      "Cardio",
+      "Abdômen",
+      "Full Body",
+    ];
+
+    return treinos.take(dias).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    final workouts = [
-      "Segunda - Peito e Tríceps",
-      "Terça - Costas e Bíceps",
-      "Quarta - Cardio",
-      "Quinta - Pernas",
-      "Sexta - Ombros",
-    ];
+     final args = ModalRoute.of(context)!.settings.arguments;
+      final int dias = (args is int) ? args : 3;
+    final listaTreinos = gerarTreino(dias);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Plano de Treino"),
+        title: const Text("Seu plano de treino"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-
-            const SizedBox(height: 20),
-
             const Text(
-              "Plano Gerado",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              "Treino gerado",
+              style: TextStyle(fontSize: 22),
             ),
-
             const SizedBox(height: 20),
-
             Expanded(
               child: ListView.builder(
-                itemCount: workouts.length,
+                itemCount: listaTreinos.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.fitness_center,
-                        color: Colors.redAccent,
-                      ),
-                      title: Text(workouts[index]),
-                    ),
+                  return ListTile(
+                    leading: const Icon(Icons.fitness_center),
+                    title: Text(listaTreinos[index]),
                   );
                 },
               ),
             ),
-
             SizedBox(
               width: double.infinity,
-              height: 55,
+              height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // 💥 MARCA TREINO COMO FEITO
                   NotificationService.markWorkoutDone();
 
-                  // vai para tela de conclusão
-                  Navigator.pushNamed(
-                    context,
-                    '/workout_done',
-                  );
+                  Navigator.pushNamed(context, '/workout_done');
                 },
-                child: const Text(
-                  "FINALIZAR",
-                  style: TextStyle(fontSize: 18),
-                ),
+                child: const Text("Finalizar"),
               ),
             ),
           ],
@@ -78,4 +65,7 @@ class WorkoutAssignmentScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class BuildContext {
 }
