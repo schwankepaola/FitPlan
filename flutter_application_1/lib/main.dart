@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -22,10 +22,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // SQLite para Windows/Linux
-  if (Platform.isWindows || Platform.isLinux) {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
-  }
+ if (!kIsWeb) {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+}
 
   await NotificationService.init();
 
