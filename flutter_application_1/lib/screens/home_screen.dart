@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../notification_service.dart';
+import '../services/notification_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
