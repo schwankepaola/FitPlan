@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -16,16 +16,24 @@ import 'screens/alerts_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'theme/app_theme.dart';
-import 'notification_service.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+<<<<<<< HEAD
   // SQLite para Windows/Linux (CORRETO)
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
+=======
+  // SQLite para Windows/Linux
+ if (!kIsWeb) {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+}
+>>>>>>> f06e4bb4dc2265d6ac1e0a7bab9aa25568e04ce8
 
   // Inicialização das notificações (OK manter aqui)
   await NotificationService.init();
