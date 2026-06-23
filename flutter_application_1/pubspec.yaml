@@ -16,9 +16,12 @@ dependencies:
   shared_preferences: ^2.5.3
   intl: ^0.20.2
 
-  sqflite: ^2.4.2
-  sqflite_common_ffi: ^2.3.4
-  path: ^1.9.1
+  sqflite: 
+  sqflite_common: 
+  sqflite_common_ffi: 
+  sqflite_common_ffi_web:
+  path:
+
 
   flutter_local_notifications: ^19.4.0
 
