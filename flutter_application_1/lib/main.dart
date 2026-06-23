@@ -21,12 +21,13 @@ import 'notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // SQLite para Windows/Linux
+  // SQLite para Windows/Linux (CORRETO)
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
 
+  // Inicialização das notificações (OK manter aqui)
   await NotificationService.init();
 
   runApp(const FitPlanApp());
@@ -41,7 +42,10 @@ class FitPlanApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FITPLAN',
       theme: AppTheme.darkTheme,
-      initialRoute: '/login',
+
+      // 🔥 TESTE: se ainda der tela branca, troque para '/home'
+      initialRoute: '/home',
+
       routes: {
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
@@ -49,14 +53,12 @@ class FitPlanApp extends StatelessWidget {
         '/objective': (context) => const ObjectiveScreen(),
         '/days': (context) => const DaysPerWeekScreen(),
         '/workout': (context) => const WorkoutAssignmentScreen(),
-        '/workout_done': (context) =>
-            const WorkoutAssignmentCompleteScreen(),
+        '/workout_done': (context) => const WorkoutAssignmentCompleteScreen(),
         '/home': (context) => const HomeScreen(),
         '/history': (context) => const HistoryScreen(),
         '/alerts': (context) => const AlertsScreen(),
         '/profile': (context) => const ProfileScreen(),
-        '/notifications': (context) =>
-            const NotificationSettingsScreen(),
+        '/notifications': (context) => const NotificationSettingsScreen(),
       },
     );
   }
