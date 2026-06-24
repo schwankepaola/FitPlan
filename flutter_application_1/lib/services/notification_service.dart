@@ -7,6 +7,8 @@ class NotificationService {
   // 📌 controle simples de treino do dia
   static DateTime? _lastWorkoutDate;
 
+  static bool? get notificationsEnabled => null;
+
   static Future<void> init() async {
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -110,4 +112,8 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
   }
+
+  static void setNotificationsEnabled(bool value) {}
+
+  static void scheduleDailyReminder() {}
 }

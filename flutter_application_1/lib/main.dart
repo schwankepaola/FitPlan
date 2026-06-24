@@ -18,6 +18,7 @@ import 'screens/profile_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'theme/app_theme.dart';
 import 'services/notification_service.dart';
+import 'screens/days_assignment_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +46,7 @@ class FitPlanApp extends StatelessWidget {
       theme: AppTheme.darkTheme,
       initialRoute: '/login',
       routes: {
+        '/assign_days': (context) => const DaysAssignmentScreen(),
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),

@@ -11,7 +11,9 @@ class NotificationSettingsScreen extends StatefulWidget {
 
 class _NotificationSettingsScreenState
     extends State<NotificationSettingsScreen> {
-  bool notificationsEnabled = NotificationService.notificationsEnabled;
+
+  bool notificationsEnabled =
+      NotificationService.notificationsEnabled ?? false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class _NotificationSettingsScreenState
         child: Column(
           children: [
             const SizedBox(height: 20),
+
             const Text(
               "Configurações de notificações",
               style: TextStyle(
@@ -38,7 +41,9 @@ class _NotificationSettingsScreenState
                 fontWeight: FontWeight.bold,
               ),
             ),
+
             const SizedBox(height: 30),
+
             Container(
               decoration: BoxDecoration(
                 color: const Color(0xff111111),
@@ -69,7 +74,9 @@ class _NotificationSettingsScreenState
                 },
               ),
             ),
+
             const SizedBox(height: 20),
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
