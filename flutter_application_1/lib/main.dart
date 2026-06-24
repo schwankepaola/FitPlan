@@ -9,6 +9,7 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/objective_screen.dart';
+import 'screens/user_data_screen.dart';
 import 'screens/days_per_week_screen.dart';
 import 'screens/workout_assignment_screen.dart';
 import 'screens/workout_assignment_complete_screen.dart';
@@ -16,9 +17,10 @@ import 'screens/history_screen.dart';
 import 'screens/alerts_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/notification_settings_screen.dart';
+import 'screens/days_assignment_screen.dart';
+
 import 'theme/app_theme.dart';
 import 'services/notification_service.dart';
-import 'screens/days_assignment_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,19 +48,25 @@ class FitPlanApp extends StatelessWidget {
       theme: AppTheme.darkTheme,
       initialRoute: '/login',
       routes: {
-        '/assign_days': (context) => const DaysAssignmentScreen(),
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
+
+        // Fluxo principal
         '/objective': (context) => const ObjectiveScreen(),
+        '/user_data': (context) => const UserDataScreen(),
         '/days': (context) => const DaysPerWeekScreen(),
+        '/assign_days': (context) => const DaysAssignmentScreen(),
+
         '/workout': (context) => const WorkoutAssignmentScreen(),
         '/workout_done': (context) =>
             const WorkoutAssignmentCompleteScreen(),
+
         '/home': (context) => const HomeScreen(),
         '/history': (context) => const HistoryScreen(),
         '/alerts': (context) => const AlertsScreen(),
         '/profile': (context) => const ProfileScreen(),
+
         '/notifications': (context) =>
             const NotificationSettingsScreen(),
       },

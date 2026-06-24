@@ -8,7 +8,6 @@ class ObjectiveScreen extends StatefulWidget {
 }
 
 class _ObjectiveScreenState extends State<ObjectiveScreen> {
-
   String objetivoSelecionado = '';
 
   final Color verde = const Color(0xFFC6FF00);
@@ -18,8 +17,7 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
     String subtitulo,
     IconData icone,
   ) {
-    bool selecionado =
-        objetivoSelecionado == titulo;
+    bool selecionado = objetivoSelecionado == titulo;
 
     return GestureDetector(
       onTap: () {
@@ -34,15 +32,12 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
           color: const Color(0xff111111),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: selecionado
-                ? verde
-                : Colors.white10,
+            color: selecionado ? verde : Colors.white10,
             width: 2,
           ),
         ),
         child: Row(
           children: [
-
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -54,15 +49,11 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
                 color: Colors.grey,
               ),
             ),
-
             const SizedBox(width: 15),
-
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Text(
                     titulo,
                     style: const TextStyle(
@@ -71,7 +62,6 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   Text(
                     subtitulo,
                     style: const TextStyle(
@@ -89,17 +79,14 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(28),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               const SizedBox(height: 15),
 
               RichText(
@@ -136,25 +123,20 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
 
               Row(
                 children: [
-
                   Expanded(
                     child: Container(
                       height: 4,
                       color: verde,
                     ),
                   ),
-
                   const SizedBox(width: 5),
-
                   Expanded(
                     child: Container(
                       height: 4,
                       color: Colors.white10,
                     ),
                   ),
-
                   const SizedBox(width: 5),
-
                   Expanded(
                     child: Container(
                       height: 4,
@@ -214,15 +196,24 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
                     backgroundColor: verde,
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                   onPressed: () {
+                    if (objetivoSelecionado.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Selecione um objetivo para continuar',
+                          ),
+                        ),
+                      );
+                      return;
+                    }
 
                     Navigator.pushNamed(
                       context,
-                      '/days',
+                      '/user_data',
                     );
                   },
                   child: const Text(
