@@ -16,6 +16,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final Color verde = const Color(0xFFC6FF00);
 
+  bool mostrarSenha = false;
+
   Future<void> register() async {
     if (_formKey.currentState!.validate()) {
       await AuthService().cadastrar(
@@ -117,7 +119,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                         ),
-
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.all(4),
@@ -162,12 +163,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   TextFormField(
                     controller: passwordController,
-                    obscureText: true,
+                    obscureText: !mostrarSenha,
                     style: const TextStyle(color: Colors.white),
-                    decoration: campoDecoracao("Mínimo 4 caracteres").copyWith(
-                      suffixIcon: const Icon(
-                        Icons.visibility_outlined,
-                        color: Colors.grey,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Digite uma senha";
+                      }
+                      if (value.length < 4) {
+                        return "A senha deve ter no mínimo 4 caracteres";
+                      }
+                      return null;
+                    },
+                    decoration: campoDecoracao(
+                      "Mínimo 4 caracteres",
+                    ).copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          mostrarSenha
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            mostrarSenha = !mostrarSenha;
+                          });
+                        },
                       ),
                     ),
                   ),
@@ -179,24 +200,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 60,
                     child: ElevatedButton.icon(
                       onPressed: () async {
+                        if (!_formKey.currentState!.validate()) return;
+
                         try {
                           await AuthService().cadastrar(
                             nameController.text,
                             passwordController.text,
                           );
 
-                          print("USUÁRIO SALVO!");
-
                           if (!mounted) return;
 
-                          Navigator.pushReplacementNamed(context, '/objective');
+                          Navigator.pushReplacementNamed(
+                            context,
+                            '/objective',
+                          );
                         } catch (e) {
-                          print("ERRO: $e");
-
                           if (!mounted) return;
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Erro ao cadastrar: $e")),
+                            SnackBar(
+                              content: Text(
+                                "Erro ao cadastrar: $e",
+                              ),
+                            ),
                           );
                         }
                       },
