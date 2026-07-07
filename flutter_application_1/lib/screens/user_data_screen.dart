@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 
 class UserDataScreen extends StatefulWidget {
   const UserDataScreen({super.key});
@@ -109,10 +110,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
 
                 const Text(
                   "Para ajustar a intensidade do treino.",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 18,
-                  ),
+                  style: TextStyle(color: Colors.grey, fontSize: 18),
                 ),
 
                 const SizedBox(height: 40),
@@ -196,8 +194,37 @@ class _UserDataScreenState extends State<UserDataScreen> {
                               borderRadius: BorderRadius.circular(18),
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/days');
+                          onPressed: () async {
+                            if (idadeController.text.isEmpty ||
+                                pesoController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Preencha idade e peso."),
+                                ),
+                              );
+                              return;
+                            }
+
+                            try {
+                              await AuthService().salvarDadosUsuario(
+                                idade: int.parse(idadeController.text),
+                                peso: double.parse(
+                                  pesoController.text.replaceAll(',', '.'),
+                                ),
+                              );
+
+                              if (!mounted) return;
+
+                              Navigator.pushNamed(context, '/days');
+                            } catch (e) {
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Erro ao salvar os dados: $e"),
+                                ),
+                              );
+                            }
                           },
                           child: const Text(
                             "CONTINUAR",
@@ -210,7 +237,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

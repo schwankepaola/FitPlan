@@ -18,19 +18,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool mostrarSenha = false;
 
-  Future<void> register() async {
-    if (_formKey.currentState!.validate()) {
-      await AuthService().cadastrar(
-        nameController.text,
-        passwordController.text,
-      );
-
-      if (!mounted) return;
-
-      Navigator.pushReplacementNamed(context, '/objective');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -208,6 +195,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             passwordController.text,
                           );
 
+                          await AuthService().login(
+                            nameController.text,
+                            passwordController.text,
+                          );
+
                           if (!mounted) return;
 
                           Navigator.pushReplacementNamed(
@@ -219,9 +211,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(
-                                "Erro ao cadastrar: $e",
-                              ),
+                              content: Text("Erro ao cadastrar: $e"),
                             ),
                           );
                         }

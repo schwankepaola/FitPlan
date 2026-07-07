@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 
 class ObjectiveScreen extends StatefulWidget {
   const ObjectiveScreen({super.key});
@@ -12,11 +13,7 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
 
   final Color verde = const Color(0xFFC6FF00);
 
-  Widget cardObjetivo(
-    String titulo,
-    String subtitulo,
-    IconData icone,
-  ) {
+  Widget cardObjetivo(String titulo, String subtitulo, IconData icone) {
     bool selecionado = objetivoSelecionado == titulo;
 
     return GestureDetector(
@@ -44,10 +41,7 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
                 color: Colors.white10,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(
-                icone,
-                color: Colors.grey,
-              ),
+              child: Icon(icone, color: Colors.grey),
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -62,12 +56,7 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    subtitulo,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
+                  Text(subtitulo, style: const TextStyle(color: Colors.grey)),
                 ],
               ),
             ),
@@ -114,35 +103,18 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
 
               const Text(
                 "Plano de treino personalizado",
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
+                style: TextStyle(color: Colors.grey),
               ),
 
               const SizedBox(height: 30),
 
               Row(
                 children: [
-                  Expanded(
-                    child: Container(
-                      height: 4,
-                      color: verde,
-                    ),
-                  ),
+                  Expanded(child: Container(height: 4, color: verde)),
                   const SizedBox(width: 5),
-                  Expanded(
-                    child: Container(
-                      height: 4,
-                      color: Colors.white10,
-                    ),
-                  ),
+                  Expanded(child: Container(height: 4, color: Colors.white10)),
                   const SizedBox(width: 5),
-                  Expanded(
-                    child: Container(
-                      height: 4,
-                      color: Colors.white10,
-                    ),
-                  ),
+                  Expanded(child: Container(height: 4, color: Colors.white10)),
                 ],
               ),
 
@@ -161,9 +133,7 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
 
               const Text(
                 "Escolha um objetivo para personalizar seu plano.",
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
+                style: TextStyle(color: Colors.grey),
               ),
 
               const SizedBox(height: 30),
@@ -199,28 +169,33 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (objetivoSelecionado.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                            'Selecione um objetivo para continuar',
-                          ),
+                          content: Text('Selecione um objetivo para continuar'),
                         ),
                       );
                       return;
                     }
 
-                    Navigator.pushNamed(
-                      context,
-                      '/user_data',
-                    );
+                    try {
+                      await AuthService().salvarObjetivo(objetivoSelecionado);
+
+                      if (!mounted) return;
+
+                      Navigator.pushNamed(context, '/user_data');
+                    } catch (e) {
+                      if (!mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Erro ao salvar objetivo: $e")),
+                      );
+                    }
                   },
                   child: const Text(
                     "CONTINUAR",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
