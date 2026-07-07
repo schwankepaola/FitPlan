@@ -18,38 +18,51 @@ class DatabaseHelper {
 
     _database = await openDatabase(
       'fitplan.db',
-      version: 1,
+      version: 2,
+
       onCreate: (db, version) async {
-        // 👤 USUÁRIOS
-        await db.execute('''
-          CREATE TABLE usuarios(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            email TEXT,
-            senha TEXT
-          )
-        ''');
+        await _criarTabelas(db);
+      },
 
-        // 📊 PLANOS
-        await db.execute('''
-          CREATE TABLE planos(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            objetivo TEXT,
-            dias INTEGER
-          )
-        ''');
+      onUpgrade: (db, oldVersion, newVersion) async {
+        await db.execute("DROP TABLE IF EXISTS usuarios");
+        await db.execute("DROP TABLE IF EXISTS planos");
+        await db.execute("DROP TABLE IF EXISTS historico");
 
-        // 🏋️ HISTÓRICO (CORRIGIDO)
-        await db.execute('''
-          CREATE TABLE historico(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            treino TEXT,
-            data TEXT
-          )
-        ''');
+        await _criarTabelas(db);
       },
     );
 
     return _database!;
+  }
+
+  static Future<void> _criarTabelas(Database db) async {
+    await db.execute('''
+      CREATE TABLE usuarios(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL,
+        senha TEXT NOT NULL,
+        objetivo TEXT,
+        idade INTEGER DEFAULT 0,
+        peso REAL DEFAULT 0,
+        diasSemana INTEGER DEFAULT 0
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE planos(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        objetivo TEXT,
+        dias INTEGER
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE historico(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        treino TEXT,
+        data TEXT
+      )
+    ''');
   }
 }
