@@ -168,4 +168,18 @@ class AuthService {
 
 
   static int get diasSemana => usuarioLogado?['diasSemana'] ?? 0;
+  Future<void> concluirTreino(int id) async {
+
+  Database db = await DatabaseHelper.getDatabase();
+
+  await db.update(
+    'plano',
+    {
+      'concluido': 1,
+    },
+    where: 'id = ?',
+    whereArgs: [id],
+  );
+
+}
 }
