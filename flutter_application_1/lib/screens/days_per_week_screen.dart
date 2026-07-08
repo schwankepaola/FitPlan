@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 
 class DaysPerWeekScreen extends StatefulWidget {
   const DaysPerWeekScreen({super.key});
@@ -28,9 +29,7 @@ class _DaysPerWeekScreenState extends State<DaysPerWeekScreen> {
         decoration: BoxDecoration(
           color: ativo ? verde : const Color(0xff111111),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: ativo ? verde : Colors.white10,
-          ),
+          border: Border.all(color: ativo ? verde : Colors.white10),
         ),
         child: Center(
           child: Text(
@@ -90,13 +89,16 @@ class _DaysPerWeekScreenState extends State<DaysPerWeekScreen> {
                 Row(
                   children: [
                     Expanded(
-                        child: Container(height: 4, color: Color(0xFFC6FF00))),
+                      child: Container(height: 4, color: Color(0xFFC6FF00)),
+                    ),
                     const SizedBox(width: 5),
                     Expanded(
-                        child: Container(height: 4, color: Color(0xFFC6FF00))),
+                      child: Container(height: 4, color: Color(0xFFC6FF00)),
+                    ),
                     const SizedBox(width: 5),
                     Expanded(
-                        child: Container(height: 4, color: Color(0xFFC6FF00))),
+                      child: Container(height: 4, color: Color(0xFFC6FF00)),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 40),
@@ -145,12 +147,26 @@ class _DaysPerWeekScreenState extends State<DaysPerWeekScreen> {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/workout',
-                              arguments: diasSelecionados,
-                            );
+                          onPressed: () async {
+                            try {
+                              await AuthService().salvarDiasSemana(
+                                diasSelecionados,
+                              );
+
+                              if (!mounted) return;
+
+                              Navigator.pushNamed(
+                                context,
+                                '/workout',
+                                arguments: diasSelecionados,
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Erro ao salvar os dias: $e"),
+                                ),
+                              );
+                            }
                           },
                           child: const Text(
                             "GERAR MEU PLANO",

@@ -4,14 +4,7 @@ import '../database/db_helper.dart';
 class AuthService {
   static Map<String, dynamic>? usuarioLogado;
 
-  // ==========================
-  // CADASTRO
-  // ==========================
-
-  Future<void> cadastrar(
-    String nome,
-    String senha,
-  ) async {
+  Future<void> cadastrar(String nome, String senha) async {
     Database db = await DatabaseHelper.getDatabase();
 
     await db.insert(
@@ -27,14 +20,7 @@ class AuthService {
     );
   }
 
-  // ==========================
-  // LOGIN
-  // ==========================
-
-  Future<bool> login(
-    String nome,
-    String senha,
-  ) async {
+  Future<bool> login(String nome, String senha) async {
     Database db = await DatabaseHelper.getDatabase();
 
     List<Map<String, dynamic>> resultado = await db.query(
@@ -48,22 +34,16 @@ class AuthService {
     }
 
     usuarioLogado = Map<String, dynamic>.from(resultado.first);
-
     return true;
   }
 
-  // ==========================
-  // SALVAR OBJETIVO
-  // ==========================
 
   Future<void> salvarObjetivo(String objetivo) async {
     Database db = await DatabaseHelper.getDatabase();
 
     await db.update(
       'usuarios',
-      {
-        'objetivo': objetivo,
-      },
+      {'objetivo': objetivo},
       where: 'id = ?',
       whereArgs: [usuarioLogado!['id']],
     );
@@ -71,9 +51,6 @@ class AuthService {
     usuarioLogado!['objetivo'] = objetivo;
   }
 
-  // ==========================
-  // SALVAR IDADE E PESO
-  // ==========================
 
   Future<void> salvarDadosUsuario({
     required int idade,
@@ -95,28 +72,22 @@ class AuthService {
     usuarioLogado!['peso'] = peso;
   }
 
-  // ==========================
-  // SALVAR DIAS
-  // ==========================
 
-  Future<void> salvarDiasSemana(int diasSemana) async {
+  Future<void> salvarDiasSemana(int dias) async {
     Database db = await DatabaseHelper.getDatabase();
 
     await db.update(
       'usuarios',
       {
-        'diasSemana': diasSemana,
+        'diasSemana': dias,
       },
       where: 'id = ?',
       whereArgs: [usuarioLogado!['id']],
     );
 
-    usuarioLogado!['diasSemana'] = diasSemana;
+    usuarioLogado!['diasSemana'] = dias;
   }
 
-  // ==========================
-  // ATUALIZAR USUÁRIO LOGADO
-  // ==========================
 
   Future<void> atualizarUsuarioLogado() async {
     Database db = await DatabaseHelper.getDatabase();
@@ -132,29 +103,69 @@ class AuthService {
     }
   }
 
+
   // ==========================
-  // GETTERS
+  // PLANO DE TREINO
   // ==========================
 
-  static String get nome =>
-      usuarioLogado?['nome'] ?? '';
 
-  static String get objetivo =>
-      usuarioLogado?['objetivo'] ?? '';
+  Future<void> limparPlano() async {
+    Database db = await DatabaseHelper.getDatabase();
 
-  static int get idade =>
-      usuarioLogado?['idade'] ?? 0;
+    await db.delete(
+      'plano',
+      where: 'usuarioId = ?',
+      whereArgs: [usuarioLogado!['id']],
+    );
+  }
+
+
+  Future<void> salvarTreino(String dia, String treino) async {
+    Database db = await DatabaseHelper.getDatabase();
+
+    await db.insert(
+      'plano',
+      {
+        'usuarioId': usuarioLogado!['id'],
+        'dia': dia,
+        'treino': treino,
+        'concluido': 0,
+      },
+    );
+  }
+
+
+  Future<List<Map<String, dynamic>>> carregarPlano() async {
+    Database db = await DatabaseHelper.getDatabase();
+
+    return await db.query(
+      'plano',
+      where: 'usuarioId = ?',
+      whereArgs: [usuarioLogado!['id']],
+      orderBy: 'id',
+    );
+  }
+
+
+  static String get nome => usuarioLogado?['nome'] ?? '';
+
+  static String get objetivo => usuarioLogado?['objetivo'] ?? '';
+
+  static int get idade => usuarioLogado?['idade'] ?? 0;
+
 
   static double get peso {
     final valor = usuarioLogado?['peso'];
 
     if (valor == null) return 0;
 
-    if (valor is int) return valor.toDouble();
+    if (valor is int) {
+      return valor.toDouble();
+    }
 
     return valor;
   }
 
-  static int get diasSemana =>
-      usuarioLogado?['diasSemana'] ?? 0;
+
+  static int get diasSemana => usuarioLogado?['diasSemana'] ?? 0;
 }

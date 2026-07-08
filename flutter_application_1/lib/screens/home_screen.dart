@@ -12,12 +12,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final Color verde = const Color(0xFFC6FF00);
 
-  bool treinoSegundaExpandido = true;
-  bool treinoConcluido = false;
+  bool treinoExpandido = true;
+
+  List<Map<String, dynamic>> plano = [];
+
+  bool carregando = true;
 
   String get nomeUsuario => AuthService.nome;
   int get idadeUsuario => AuthService.idade;
   double get pesoUsuario => AuthService.peso;
+  int get diasSemanaUsuario => AuthService.diasSemana;
 
   final List<Map<String, String>> exerciciosSegunda = [
     {"nome": "Supino Reto com Barra", "serie": "4x", "rep": "8-10"},
@@ -26,6 +30,28 @@ class _HomeScreenState extends State<HomeScreen> {
     {"nome": "Tríceps Testa", "serie": "3x", "rep": "10-12"},
     {"nome": "Tríceps Corda no Cabo", "serie": "3x", "rep": "12-15"},
   ];
+  @override
+  void initState() {
+    super.initState();
+    carregarPlano();
+  }
+
+  Future<void> carregarPlano() async {
+    final resultado = await AuthService().carregarPlano();
+
+    setState(() {
+      plano = resultado;
+      carregando = false;
+    });
+  }
+
+  int calcularProgresso() {
+    if (plano.isEmpty) return 0;
+
+    int concluidos = plano.where((treino) => treino['concluido'] == 1).length;
+
+    return ((concluidos / plano.length) * 100).round();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(width: 8),
-                  const Icon(
-                    Icons.settings,
-                    color: Colors.grey,
-                    size: 18,
-                  ),
+                  const Icon(Icons.settings, color: Colors.grey, size: 18),
                 ],
               ),
 
@@ -151,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const Spacer(),
                         Text(
-                          treinoConcluido ? "25%" : "0%",
+                          "${calcularProgresso()}%",
                           style: TextStyle(
                             color: verde,
                             fontSize: 42,
@@ -175,9 +197,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(color: Colors.grey),
                         ),
                         const SizedBox(width: 20),
-                        const Text(
-                          "4x/sem",
-                          style: TextStyle(color: Colors.grey),
+                        Text(
+                          "${diasSemanaUsuario}x/sem",
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ],
                     ),
@@ -185,7 +207,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 15),
 
                     LinearProgressIndicator(
-                      value: treinoConcluido ? 0.25 : 0,
+                      value: plano.isEmpty
+                          ? 0
+                          : plano.where((t) => t['concluido'] == 1).length /
+                                plano.length,
                       backgroundColor: Colors.white10,
                       valueColor: AlwaysStoppedAnimation<Color>(verde),
                     ),
@@ -195,9 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        treinoConcluido
-                            ? "1/4 treinos"
-                            : "0/4 treinos",
+                        "${plano.where((t) => t['concluido'] == 1).length}/${plano.length} treinos",
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ),
@@ -242,21 +265,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       trailing: IconButton(
                         icon: Icon(
-                          treinoSegundaExpandido
+                          treinoExpandido
                               ? Icons.expand_less
                               : Icons.expand_more,
                           color: Colors.white,
                         ),
                         onPressed: () {
                           setState(() {
-                            treinoSegundaExpandido =
-                                !treinoSegundaExpandido;
+                            treinoExpandido = !treinoExpandido;
                           });
                         },
                       ),
                     ),
 
-                    if (treinoSegundaExpandido)
+                    if (treinoExpandido)
                       Padding(
                         padding: const EdgeInsets.all(12),
                         child: Column(
@@ -267,8 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: const Color(0xff1b1b1b),
-                                  borderRadius:
-                                      BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Row(
                                   children: [
@@ -299,21 +320,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 50,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: treinoConcluido
+                                  backgroundColor:
+                                      plano.isNotEmpty &&
+                                          plano.first['concluido'] == 1
                                       ? Colors.green
                                       : verde,
                                   foregroundColor: Colors.black,
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    treinoConcluido = true;
+                                    if (plano.isNotEmpty) {
+                                      plano.first['concluido'] = 1;
+                                    }
                                   });
 
-                                  NotificationService
-                                      .showTestNotification();
+                                  NotificationService.showTestNotification();
 
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
                                         "Treino concluído com sucesso!",
@@ -322,7 +345,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   );
                                 },
                                 child: Text(
-                                  treinoConcluido
+                                  plano.isNotEmpty &&
+                                          plano.first['concluido'] == 1
                                       ? "TREINO CONCLUÍDO ✓"
                                       : "MARCAR COMO CONCLUÍDO",
                                   style: const TextStyle(
