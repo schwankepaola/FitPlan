@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import '../services/notification_service.dart';
 import '../services/auth_service.dart';
 
@@ -125,97 +125,109 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               const SizedBox(height: 20),
-
-              Container(
-                padding: const EdgeInsets.all(18),
-
-                decoration: BoxDecoration(
-                  color: const Color(0xff111111),
-
-                  borderRadius: BorderRadius.circular(18),
-                ),
-
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        const Text(
-                          "Ganhar Massa",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        const Spacer(),
-
-                        Text(
-                          "${calcularProgresso()}%",
-
-                          style: TextStyle(
-                            color: verde,
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    Row(
-                      children: [
-                        Text(
-                          "$idadeUsuario anos",
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-
-                        const SizedBox(width: 20),
-
-                        Text(
-                          "${pesoUsuario.toStringAsFixed(0)} kg",
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-
-                        const SizedBox(width: 20),
-
-                        Text(
-                          "${diasSemanaUsuario}x/sem",
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    LinearProgressIndicator(
-                      value: plano.isEmpty
-                          ? 0
-                          : plano.where((t) => t['concluido'] == 1).length /
-                                plano.length,
-
-                      backgroundColor: Colors.white10,
-
-                      valueColor: AlwaysStoppedAnimation<Color>(verde),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Align(
-                      alignment: Alignment.centerRight,
-
-                      child: Text(
-                        "${plano.where((t) => t['concluido'] == 1).length}/${plano.length} treinos",
-
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                  ],
-                ),
+                  Container(
+  width: double.infinity,
+  padding: const EdgeInsets.all(18),
+  decoration: BoxDecoration(
+    color: const Color(0xff111111),
+    borderRadius: BorderRadius.circular(20),
+    border: Border.all(color: Colors.white10),
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 5,
+            ),
+            decoration: BoxDecoration(
+              color: verde,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              AuthService.objetivo.isEmpty
+                  ? "Sem objetivo"
+                  : AuthService.objetivo,
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
               ),
+            ),
+          ),
+          const Spacer(),
+          Text(
+            "${calcularProgresso()}%",
+            style: TextStyle(
+              color: verde,
+              fontSize: 46,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
 
-              const SizedBox(height: 20),
+      const SizedBox(height: 15),
+
+      Row(
+        children: [
+          Text(
+            "$idadeUsuario anos",
+            style: const TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(width: 20),
+          Text(
+            "${pesoUsuario.toStringAsFixed(0)} kg",
+            style: const TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(width: 20),
+          Text(
+            "${diasSemanaUsuario}x/sem",
+            style: const TextStyle(color: Colors.grey),
+          ),
+        ],
+      ),
+
+      const SizedBox(height: 18),
+
+      const Text(
+        "Progresso semanal",
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: 12,
+        ),
+      ),
+
+      const SizedBox(height: 10),
+
+      LinearProgressIndicator(
+        value: plano.isEmpty
+            ? 0
+            : plano.where((t) => t['concluido'] == 1).length /
+                plano.length,
+        minHeight: 6,
+        backgroundColor: Colors.white10,
+        valueColor: AlwaysStoppedAnimation<Color>(verde),
+      ),
+
+      const SizedBox(height: 10),
+
+     Align(
+  alignment: Alignment.centerRight,
+  child: Text(
+    "${plano.where((t) => t['concluido'] == 1).length}/${plano.length} treinos",
+    style: const TextStyle(color: Colors.grey),
+  ),
+),
+
+],
+),
+),
+
+const SizedBox(height: 20),
 
               if (carregando)
                 const CircularProgressIndicator()
