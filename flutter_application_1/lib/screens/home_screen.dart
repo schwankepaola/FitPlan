@@ -1,4 +1,4 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../services/notification_service.dart';
 import '../services/auth_service.dart';
 
@@ -85,44 +85,67 @@ class _HomeScreenState extends State<HomeScreen> {
 
           child: Column(
             children: [
-              Row(
-                children: [
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "FIT",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+             Row(
+  children: [
+    Container(
+      width: 55,
+      height: 55,
+      decoration: BoxDecoration(
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: const Icon(
+        Icons.person,
+        color: Colors.white,
+        size: 30,
+      ),
+    ),
 
-                        TextSpan(
-                          text: "PLAN",
-                          style: TextStyle(
-                            color: Color(0xFFC6FF00),
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+    const SizedBox(width: 15),
 
-                  const Spacer(),
+    Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Bem-vindo",
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 14,
+            ),
+          ),
 
-                  Text(
-                    "Olá, $nomeUsuario",
-                    style: const TextStyle(color: Colors.white),
-                  ),
+          Text(
+            nomeUsuario,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+          ),
+        ],
+      ),
+    ),
 
-                  const SizedBox(width: 8),
-
-                  const Icon(Icons.settings, color: Colors.grey),
-                ],
-              ),
+    Container(
+      width: 45,
+      height: 45,
+      decoration: BoxDecoration(
+        color: const Color(0xff1E1E1E),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: IconButton(
+        icon: const Icon(
+          Icons.settings,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          Navigator.pushNamed(context, "/configuracoes");
+        },
+      ),
+    ),
+  ],
+),
 
               const SizedBox(height: 20),
                   Container(
@@ -237,87 +260,124 @@ const SizedBox(height: 20),
                   style: TextStyle(color: Colors.grey),
                 )
               else
-                ...plano.map(
-                  (treino) => Card(
-                    color: const Color(0xff111111),
+             ...plano.map(
+  (treino) => Container(
+    margin: const EdgeInsets.only(bottom: 16),
+    decoration: BoxDecoration(
+      color: const Color(0xff171717),
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: Colors.white10),
+    ),
+    child: ExpansionTile(
+      tilePadding: const EdgeInsets.symmetric(
+        horizontal: 18,
+        vertical: 8,
+      ),
+      childrenPadding: const EdgeInsets.fromLTRB(
+        18,
+        0,
+        18,
+        18,
+      ),
+      iconColor: Colors.white,
+      collapsedIconColor: Colors.white,
+      leading: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.white10,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Center(
+          child: Text(
+            abreviarDia(treino['dia']),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+      title: Text(
+        treino['treino'],
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+        ),
+      ),
+      subtitle: Text(
+        treino['dia'],
+        style: const TextStyle(color: Colors.grey),
+      ),
+      children: [
+        const Divider(color: Colors.white10),
 
-                    child: ExpansionTile(
-                      iconColor: Colors.white,
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Exercícios",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
 
-                      collapsedIconColor: Colors.white,
+        const SizedBox(height: 10),
 
-                      leading: Container(
-                        width: 45,
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Os exercícios aparecerão aqui.",
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
 
-                        height: 45,
+        const SizedBox(height: 18),
 
-                        decoration: BoxDecoration(
-                          color: Colors.white10,
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: treino['concluido'] == 1
+                  ? Colors.green
+                  : verde,
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            onPressed: () async {
+              await AuthService().concluirTreino(treino['id']);
+              await carregarPlano();
 
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+              if (!mounted) return;
 
-                        child: Center(
-                          child: Text(
-                            abreviarDia(treino['dia']),
+              NotificationService.showTestNotification();
 
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      title: Text(
-                        treino['dia'],
-
-                        style: const TextStyle(color: Colors.white),
-                      ),
-
-                      subtitle: Text(
-                        treino['treino'],
-
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: treino['concluido'] == 1
-                                ? Colors.green
-                                : verde,
-                            foregroundColor: Colors.black,
-                          ),
-
-                          onPressed: () async {
-                            await AuthService().concluirTreino(treino['id']);
-
-                            await carregarPlano();
-
-                            if (!mounted) return;
-
-                            NotificationService.showTestNotification();
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Treino concluído com sucesso!"),
-                              ),
-                            );
-                          },
-
-                          child: Text(
-                            treino['concluido'] == 1
-                                ? "TREINO CONCLUÍDO ✓"
-                                : "MARCAR COMO CONCLUÍDO",
-
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Treino concluído com sucesso!"),
                 ),
+              );
+            },
+            child: Text(
+              treino['concluido'] == 1
+                  ? "TREINO CONCLUÍDO ✓"
+                  : "MARCAR COMO CONCLUÍDO",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
             ],
           ),
         ),
