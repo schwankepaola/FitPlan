@@ -329,6 +329,7 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
                         await AuthService().salvarTreino(
                           diasEscolhidos[i]!,
                           treinos[i]["nome"],
+                          (treinos[i]["exercicios"] as List).join("\n"),
                         );
                       }
                     }

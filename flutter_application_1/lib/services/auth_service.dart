@@ -120,20 +120,24 @@ class AuthService {
   }
 
 
-  Future<void> salvarTreino(String dia, String treino) async {
-    Database db = await DatabaseHelper.getDatabase();
+ Future<void> salvarTreino(
+  String dia,
+  String treino,
+  String exercicios,
+) async {
+  Database db = await DatabaseHelper.getDatabase();
 
-    await db.insert(
-      'plano',
-      {
-        'usuarioId': usuarioLogado!['id'],
-        'dia': dia,
-        'treino': treino,
-        'concluido': 0,
-      },
-    );
-  }
-
+  await db.insert(
+    'plano',
+    {
+      'usuarioId': usuarioLogado!['id'],
+      'dia': dia,
+      'treino': treino,
+      'exercicios': exercicios,
+      'concluido': 0,
+    },
+  );
+}
 
   Future<List<Map<String, dynamic>>> carregarPlano() async {
     Database db = await DatabaseHelper.getDatabase();
@@ -181,5 +185,214 @@ class AuthService {
     whereArgs: [id],
   );
 
+}
+List<Map<String, String>> buscarExercicios(String treino) {
+  switch (treino) {
+    case "Peito & Tríceps":
+      return [
+        {
+          "nome": "Supino Reto",
+          "series": "4",
+          "repeticoes": "10",
+          "descanso": "60s",
+        },
+        {
+          "nome": "Supino Inclinado",
+          "series": "4",
+          "repeticoes": "12",
+          "descanso": "60s",
+        },
+        {
+          "nome": "Crucifixo",
+          "series": "3",
+          "repeticoes": "12",
+          "descanso": "45s",
+        },
+        {
+          "nome": "Tríceps Testa",
+          "series": "3",
+          "repeticoes": "10",
+          "descanso": "45s",
+        },
+      ];
+
+    case "Costas & Bíceps":
+      return [
+        {
+          "nome": "Puxada Frontal",
+          "series": "4",
+          "repeticoes": "12",
+          "descanso": "60s",
+        },
+        {
+          "nome": "Remada Curvada",
+          "series": "4",
+          "repeticoes": "10",
+          "descanso": "60s",
+        },
+        {
+          "nome": "Rosca Direta",
+          "series": "3",
+          "repeticoes": "12",
+          "descanso": "45s",
+        },
+        {
+          "nome": "Rosca Martelo",
+          "series": "3",
+          "repeticoes": "10",
+          "descanso": "45s",
+        },
+      ];
+
+    case "Pernas & Glúteos":
+      return [
+        {
+          "nome": "Agachamento",
+          "series": "4",
+          "repeticoes": "10",
+          "descanso": "90s",
+        },
+        {
+          "nome": "Leg Press",
+          "series": "4",
+          "repeticoes": "12",
+          "descanso": "90s",
+        },
+        {
+          "nome": "Extensora",
+          "series": "3",
+          "repeticoes": "15",
+          "descanso": "60s",
+        },
+        {
+          "nome": "Stiff",
+          "series": "3",
+          "repeticoes": "12",
+          "descanso": "60s",
+        },
+      ];
+
+    case "Ombros & Core":
+      return [
+        {
+          "nome": "Desenvolvimento",
+          "series": "4",
+          "repeticoes": "10",
+          "descanso": "60s",
+        },
+        {
+          "nome": "Elevação Lateral",
+          "series": "3",
+          "repeticoes": "12",
+          "descanso": "45s",
+        },
+        {
+          "nome": "Prancha",
+          "series": "3",
+          "repeticoes": "40s",
+          "descanso": "30s",
+        },
+        {
+          "nome": "Abdominal",
+          "series": "3",
+          "repeticoes": "20",
+          "descanso": "30s",
+        },
+      ];
+
+    case "Cardio":
+      return [
+        {
+          "nome": "Corrida",
+          "series": "1",
+          "repeticoes": "20 min",
+          "descanso": "-",
+        },
+        {
+          "nome": "Bicicleta",
+          "series": "1",
+          "repeticoes": "15 min",
+          "descanso": "-",
+        },
+        {
+          "nome": "Elíptico",
+          "series": "1",
+          "repeticoes": "15 min",
+          "descanso": "-",
+        },
+        {
+          "nome": "Corda",
+          "series": "5",
+          "repeticoes": "1 min",
+          "descanso": "30s",
+        },
+      ];
+
+    case "Full Body":
+      return [
+        {
+          "nome": "Agachamento",
+          "series": "3",
+          "repeticoes": "12",
+          "descanso": "60s",
+        },
+        {
+          "nome": "Supino",
+          "series": "3",
+          "repeticoes": "12",
+          "descanso": "60s",
+        },
+        {
+          "nome": "Remada",
+          "series": "3",
+          "repeticoes": "12",
+          "descanso": "60s",
+        },
+        {
+          "nome": "Prancha",
+          "series": "3",
+          "repeticoes": "40s",
+          "descanso": "30s",
+        },
+      ];
+
+    case "Alongamento":
+      return [
+        {
+          "nome": "Mobilidade",
+          "series": "2",
+          "repeticoes": "10",
+          "descanso": "20s",
+        },
+        {
+          "nome": "Alongamentos",
+          "series": "2",
+          "repeticoes": "30s",
+          "descanso": "20s",
+        },
+        {
+          "nome": "Liberação Miofascial",
+          "series": "1",
+          "repeticoes": "5 min",
+          "descanso": "-",
+        },
+        {
+          "nome": "Relaxamento",
+          "series": "1",
+          "repeticoes": "5 min",
+          "descanso": "-",
+        },
+      ];
+
+    default:
+      return [
+        {
+          "nome": "Treino não encontrado",
+          "series": "-",
+          "repeticoes": "-",
+          "descanso": "-",
+        }
+      ];
+  }
 }
 }
