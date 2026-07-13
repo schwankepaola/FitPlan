@@ -125,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, "/configuracoes");
+                        Navigator.pushNamed(context, "/profile");
                       },
                       icon: const Icon(Icons.settings, color: Colors.white),
                     ),
@@ -165,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          Navigator.pushNamed(context, "/historico");
+                          Navigator.pushNamed(context, "/history");
                         },
                         child: const Center(
                           child: Text(
@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          Navigator.pushNamed(context, "/alertas");
+                         Navigator.pushNamed(context, "/alerts"); 
                         },
                         child: const Center(
                           child: Text(

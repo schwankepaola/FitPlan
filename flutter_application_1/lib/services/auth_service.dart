@@ -230,6 +230,21 @@ class AuthService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> carregarHistorico() async {
+  if (usuarioLogado == null) {
+    return [];
+  }
+
+  final Database db = await DatabaseHelper.getDatabase();
+
+  return await db.query(
+    'historico',
+    where: 'usuarioId = ?',
+    whereArgs: [usuarioLogado!['id']],
+    orderBy: 'id DESC',
+  );
+}
+
   List<Map<String, String>> buscarExercicios(
     dynamic treino,
   ) {

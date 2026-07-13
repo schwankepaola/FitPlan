@@ -1,65 +1,245 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final Color verde = const Color(0xFFC6FF00);
+
+    final String nome =
+        AuthService.nome.isEmpty ? "paola" : AuthService.nome;
+
+    final int idade = AuthService.idade;
+    final double peso = AuthService.peso;
+    final int dias = AuthService.diasSemana;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Perfil"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
+      backgroundColor: const Color(0xff0D0D0D),
 
-            const CircleAvatar(
-              radius: 50,
-              child: Icon(
-                Icons.person,
-                size: 50,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 26,
+            vertical: 22,
+          ),
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                children: [
+
+                  const Text(
+                    "Configurações",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 34,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+
+                  InkWell(
+                    borderRadius: BorderRadius.circular(14),
+
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+
+                    child: Container(
+                      width: 44,
+                      height: 44,
+
+                      decoration: BoxDecoration(
+                        color: const Color(0xff202020),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white54,
+                      ),
+                    ),
+                  )
+
+                ],
               ),
-            ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height:35),
 
-            const Text(
-              "Usuário",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+              Container(
+
+                width: double.infinity,
+                padding: const EdgeInsets.all(22),
+
+                decoration: BoxDecoration(
+                  color: const Color(0xff1D1D1D),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                  children: [
+
+                    const Text(
+                      "Conta",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height:8),
+
+                    Text(
+                      "@$nome",
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 15,
+                      ),
+                    ),
+
+                  ],
+                ),
               ),
-            ),
 
-            const Text(
-              "usuario@email.com",
-            ),
+              const SizedBox(height:18),
 
-            const SizedBox(height: 30),
+              Container(
 
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.edit),
-                title: const Text("Editar Perfil"),
-                onTap: () {},
+                width: double.infinity,
+                padding: const EdgeInsets.all(22),
+
+                decoration: BoxDecoration(
+                  color: const Color(0xff1D1D1D),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                  children: [
+
+                    const Text(
+                      "Plano atual",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height:8),
+
+                    Text(
+                      "$idade anos · ${peso.toStringAsFixed(0)}kg · ${dias}x/semana",
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 15,
+                      ),
+                    ),                  ],
+                ),
               ),
-            ),
 
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text("Sair"),
-                onTap: () {
-                  Navigator.pushReplacementNamed(
-                    context,
-                    '/login',
-                  );
-                },
+              const SizedBox(height: 28),
+
+              SizedBox(
+                width: double.infinity,
+                height: 58,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff4A250D),
+                    foregroundColor: const Color(0xFFFF7A00),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      side: const BorderSide(
+                        color: Color(0xff8B4513),
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await AuthService().limparPlano();
+
+                    if (context.mounted) {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        "/objective",
+                        (route) => false,
+                      );
+                    }
+                  },
+                  child: const Text(
+                    "REDEFINIR PLANO DE TREINO",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 18),
+
+              SizedBox(
+                width: double.infinity,
+                height: 58,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.logout),
+                  label: const Text(
+                    "SAIR DA CONTA",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff341616),
+                    foregroundColor: Colors.redAccent,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      side: const BorderSide(
+                        color: Color(0xff5B1F1F),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    AuthService.usuarioLogado = null;
+
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      "/login",
+                      (route) => false,
+                    );
+                  },
+                ),
+              ),
+
+              const Spacer(),
+
+              Center(
+                child: Text(
+                  "FITPLAN",
+                  style: TextStyle(
+                    color: verde.withOpacity(0.45),
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );

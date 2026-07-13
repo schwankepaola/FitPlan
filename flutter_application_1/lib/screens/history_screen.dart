@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -10,13 +11,7 @@ class HistoryScreen extends StatefulWidget {
 class _HistoryScreenState extends State<HistoryScreen> {
   final Color verde = const Color(0xFFC6FF00);
 
-  List<Map<String, dynamic>> treinos = [
-    {
-      'nome': 'HIIT Tabata',
-      'data': '16 de jun. de 2026',
-      'dia': 'Domingo',
-    },
-  ];
+ List<Map<String, dynamic>> treinos = [];
 
   @override
   void initState() {
@@ -24,13 +19,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
     carregarHistorico();
   }
 
-  Future<void> carregarHistorico() async {
-    await Future.delayed(const Duration(milliseconds: 300));
+ Future<void> carregarHistorico() async {
+  treinos = await AuthService().carregarHistorico();
 
-    if (!mounted) return;
-
+  if (mounted) {
     setState(() {});
   }
+}
 
   Future<void> atualizarHistorico() async {
     await carregarHistorico();
@@ -226,8 +221,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Widget _cardsEstatisticas() {
     final int quantidadeTreinos = treinos.length;
-    final int quantidadeSemanas = treinos.isEmpty ? 0 : 1;
 
+final int quantidadeSemanas =
+    quantidadeTreinos == 0
+        ? 0
+        : (quantidadeTreinos / 7).ceil();
     return Row(
       children: [
         Expanded(
@@ -385,14 +383,30 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _cardTreino(
     Map<String, dynamic> treino,
   ) {
-    final String nome =
-        treino['nome']?.toString() ?? 'Treino';
+   final String nome =
+    treino['treino']?.toString() ?? 'Treino';
 
-    final String data =
-        treino['data']?.toString() ?? '';
+final DateTime dataTreino =
+    DateTime.tryParse(
+          treino['data']?.toString() ?? '',
+        ) ??
+        DateTime.now();
 
-    final String dia =
-        treino['dia']?.toString() ?? '';
+final String data =
+    "${dataTreino.day}/${dataTreino.month}/${dataTreino.year}";
+
+final List<String> diasSemana = [
+  "Segunda",
+  "Terça",
+  "Quarta",
+  "Quinta",
+  "Sexta",
+  "Sábado",
+  "Domingo",
+];
+
+final String dia =
+    diasSemana[dataTreino.weekday - 1];
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),

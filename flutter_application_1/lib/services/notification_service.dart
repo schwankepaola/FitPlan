@@ -7,17 +7,25 @@ class NotificationService {
   // 📌 controle simples de treino do dia
   static DateTime? _lastWorkoutDate;
 
-  static bool? get notificationsEnabled => null;
+  static bool _notificationsEnabled = false;
 
-  static Future<void> init() async {
-    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+static bool get notificationsEnabled => _notificationsEnabled;
+ static Future<void> init() async {
+  const AndroidInitializationSettings androidInit =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const initSettings = InitializationSettings(
-      android: androidInit,
-    );
+  const InitializationSettings settings =
+      InitializationSettings(
+    android: androidInit,
+  );
 
-    await _notifications.initialize(initSettings);
-  }
+  await _notifications.initialize(settings);
+
+  await _notifications
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.requestNotificationsPermission();
+}
 
   // 🔥 TESTE
   static Future<void> showTestNotification() async {
@@ -94,26 +102,53 @@ class NotificationService {
 
   // 🔥 DIÁRIA (se quiser usar depois)
   static Future<void> showDailyReminder() async {
-    const androidDetails = AndroidNotificationDetails(
-      'daily_channel',
-      'Lembretes diários',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
+  const AndroidNotificationDetails androidDetails =
+      AndroidNotificationDetails(
+    'daily_channel',
+    'Lembretes de treino',
+    channelDescription: 'Lembretes diários do FitPlan',
+    importance: Importance.max,
+    priority: Priority.high,
+  );
 
-    const details = NotificationDetails(android: androidDetails);
+  const NotificationDetails details =
+      NotificationDetails(
+    android: androidDetails,
+  );
 
-    await _notifications.periodicallyShow(
-      2,
-      'Hora do treino 💪',
-      'Não esqueça seu treino de hoje!',
-      RepeatInterval.daily,
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
+  final mensagens = [
+    "💪 Seu treino de hoje está esperando por você!",
+    "🔥 Bora manter a sequência! Não falte hoje.",
+    "🏋️ Cinco minutos já fazem diferença.",
+    "🚀 Seu objetivo está cada vez mais perto.",
+    "❤️ Seu corpo agradece. Hora do treino!",
+    "👊 Vamos manter a consistência.",
+    "⭐ Não quebre sua sequência hoje.",
+  ];
+
+  final indice =
+      DateTime.now().day % mensagens.length;
+
+  await _notifications.show(
+    10,
+    "FITPLAN",
+    mensagens[indice],
+    details,
+  );
+}
+static Future<void> setNotificationsEnabled(bool value) async {
+  _notificationsEnabled = value;
+
+  if (value) {
+    await showDailyReminder();
+  } else {
+    await _notifications.cancelAll();
   }
+}
 
-  static void setNotificationsEnabled(bool value) {}
+static Future<void> scheduleDailyReminder() async {
+  if (!_notificationsEnabled) return;
 
-  static void scheduleDailyReminder() {}
+  await showDailyReminder();
+}
 }
