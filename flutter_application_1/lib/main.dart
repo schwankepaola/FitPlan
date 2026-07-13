@@ -21,16 +21,19 @@ import 'screens/days_assignment_screen.dart';
 
 import 'theme/app_theme.dart';
 import 'services/notification_service.dart';
+import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
-    databaseFactory = databaseFactoryFfiWeb;
-  } else {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
-  }
+  databaseFactory = databaseFactoryFfiWeb;
+} else if (Platform.isWindows ||
+    Platform.isLinux ||
+    Platform.isMacOS) {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+}
 
   await NotificationService.init();
 
