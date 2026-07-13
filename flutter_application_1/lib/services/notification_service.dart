@@ -10,14 +10,22 @@ class NotificationService {
   static bool _notificationsEnabled = false;
 
 static bool get notificationsEnabled => _notificationsEnabled;
- static Future<void> init() async {
+static Future<void> init() async {
   const AndroidInitializationSettings androidInit =
       AndroidInitializationSettings('@mipmap/ic_launcher');
 
+  const WindowsInitializationSettings windowsInit =
+      WindowsInitializationSettings(
+        appName: 'FitPlan',
+        appUserModelId: 'com.fitplan.app',
+        guid: 'd8b7f8c0-1234-4567-8901-abcdef123456',
+      );
+
   const InitializationSettings settings =
       InitializationSettings(
-    android: androidInit,
-  );
+        android: androidInit,
+        windows: windowsInit,
+      );
 
   await _notifications.initialize(settings);
 
