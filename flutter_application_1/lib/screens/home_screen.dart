@@ -435,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Expanded(
                                         flex: 5,
                                         child: Text(
-                                         exercicio["nome"]!,
+                                          exercicio["nome"]!,
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w600,
@@ -497,6 +497,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             onPressed: () async {
                               await AuthService().concluirTreino(treino["id"]);
+
+                              await AuthService().adicionarAlerta(
+                                "Treino concluído",
+                                "Você concluiu o treino ${treino["treino"]}.",
+                              );
 
                               await carregarPlano();
 
