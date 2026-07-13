@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'dart:io';
+import 'package:path/path.dart';
 
 class DatabaseHelper {
   static Database? _database;
@@ -9,12 +11,14 @@ class DatabaseHelper {
   static Future<Database> getDatabase() async {
     if (_database != null) return _database!;
 
-    if (kIsWeb) {
-      databaseFactory = databaseFactoryFfiWeb;
-    } else {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
-    }
+   if (kIsWeb){
+    databaseFactory = databaseFactoryFfiWeb;
+   } else if (Platform.isWindows ||
+   Platform.isLinux ||
+   Platform.isMacOS){
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi ;
+   }
 
     _database = await openDatabase(
       'fitplan.db',
