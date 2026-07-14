@@ -1,6 +1,12 @@
+// Modelo que representa um usuário da aplicação.
 class UserModel {
+  // Identificador único do usuário.
   final String uid;
+
+  // Nome do usuário.
   final String name;
+
+  // E-mail utilizado no cadastro.
   final String email;
 
   UserModel({
@@ -9,6 +15,7 @@ class UserModel {
     required this.email,
   });
 
+  // Converte o objeto em um mapa para facilitar o armazenamento no banco.
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -17,6 +24,7 @@ class UserModel {
     };
   }
 
+  // Cria um objeto UserModel a partir dos dados recuperados do banco.
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       uid: map['uid'],

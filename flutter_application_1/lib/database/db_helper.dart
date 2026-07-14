@@ -5,28 +5,35 @@ import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 
+// Classe responsável por criar e fornecer acesso ao banco de dados da aplicação.
 class DatabaseHelper {
+  // Mantém uma única instância do banco durante a execução do aplicativo.
   static Database? _database;
 
   static Future<Database> getDatabase() async {
+    // Retorna o banco já aberto, caso exista.
     if (_database != null) return _database!;
 
-   if (kIsWeb){
-    databaseFactory = databaseFactoryFfiWeb;
-   } else if (Platform.isWindows ||
-   Platform.isLinux ||
-   Platform.isMacOS){
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi ;
-   }
+    // Configura a fábrica do banco conforme a plataforma utilizada.
+    if (kIsWeb) {
+      databaseFactory = databaseFactoryFfiWeb;
+    } else if (Platform.isWindows ||
+        Platform.isLinux ||
+        Platform.isMacOS) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
 
+    // Abre ou cria o banco de dados.
     _database = await openDatabase(
       'fitplan.db',
       version: 3,
 
+      // Executado apenas na primeira criação do banco.
       onCreate: (db, version) async {
         // ==========================
-        // USUÁRIOS
+        // Tabela de usuários
+        // Armazena as informações de cadastro.
         // ==========================
         await db.execute('''
         CREATE TABLE usuarios(
@@ -41,7 +48,8 @@ class DatabaseHelper {
         ''');
 
         // ==========================
-        // PLANO
+        // Tabela de plano de treino
+        // Guarda os treinos de cada dia do usuário.
         // ==========================
         await db.execute('''
         CREATE TABLE plano(
@@ -55,7 +63,8 @@ class DatabaseHelper {
         ''');
 
         // ==========================
-        // HISTÓRICO
+        // Tabela de histórico
+        // Registra os treinos concluídos.
         // ==========================
         await db.execute('''
         CREATE TABLE historico(
@@ -67,7 +76,8 @@ class DatabaseHelper {
         ''');
 
         // ==========================
-        // ALERTAS
+        // Tabela de alertas
+        // Armazena as notificações exibidas ao usuário.
         // ==========================
         await db.execute('''
         CREATE TABLE alertas(
@@ -79,14 +89,16 @@ class DatabaseHelper {
         ''');
       },
 
+      // Executado quando a versão do banco é alterada.
       onUpgrade: (db, oldVersion, newVersion) async {
+        // Remove as tabelas antigas para recriá-las com a nova estrutura.
         await db.execute("DROP TABLE IF EXISTS usuarios");
         await db.execute("DROP TABLE IF EXISTS plano");
         await db.execute("DROP TABLE IF EXISTS historico");
         await db.execute("DROP TABLE IF EXISTS alertas");
 
         // ==========================
-        // USUÁRIOS
+        // Tabela de usuários
         // ==========================
         await db.execute('''
         CREATE TABLE usuarios(
@@ -101,7 +113,7 @@ class DatabaseHelper {
         ''');
 
         // ==========================
-        // PLANO
+        // Tabela de plano
         // ==========================
         await db.execute('''
         CREATE TABLE plano(
@@ -115,7 +127,7 @@ class DatabaseHelper {
         ''');
 
         // ==========================
-        // HISTÓRICO
+        // Tabela de histórico
         // ==========================
         await db.execute('''
         CREATE TABLE historico(
@@ -127,7 +139,7 @@ class DatabaseHelper {
         ''');
 
         // ==========================
-        // ALERTAS
+        // Tabela de alertas
         // ==========================
         await db.execute('''
         CREATE TABLE alertas(
@@ -140,6 +152,7 @@ class DatabaseHelper {
       },
     );
 
+    // Retorna a instância do banco aberta.
     return _database!;
   }
 }

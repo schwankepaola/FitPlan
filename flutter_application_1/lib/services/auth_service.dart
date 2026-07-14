@@ -1,9 +1,12 @@
 import 'package:sqflite/sqflite.dart';
 import '../database/db_helper.dart';
 
+// Serviço responsável por gerenciar o login, cadastro e os dados do usuário.
 class AuthService {
+  // Armazena temporariamente os dados do usuário logado.
   static Map<String, dynamic>? usuarioLogado;
 
+  // Realiza o cadastro de um novo usuário no banco de dados.
   Future<void> cadastrar(String nome, String senha) async {
     final Database db = await DatabaseHelper.getDatabase();
 
@@ -17,6 +20,7 @@ class AuthService {
     });
   }
 
+  // Verifica se o usuário existe e realiza o login.
   Future<bool> login(String nome, String senha) async {
     final Database db = await DatabaseHelper.getDatabase();
 
@@ -34,30 +38,21 @@ class AuthService {
 
     return true;
   }
-
-  Future<void> adicionarAlerta(
-    String titulo,
-    String descricao,
-  ) async {
+  // Salva um novo alerta.
+  Future<void> adicionarAlerta(String titulo, String descricao) async {
     final Database db = await DatabaseHelper.getDatabase();
 
-    await db.insert(
-      'alertas',
-      {
-        'titulo': titulo,
-        'descricao': descricao,
-        'lido': 0,
-      },
-    );
+    await db.insert('alertas', {
+      'titulo': titulo,
+      'descricao': descricao,
+      'lido': 0,
+    });
   }
-
+  // Retorna todos os alertas cadastrados.
   Future<List<Map<String, dynamic>>> carregarAlertas() async {
     final Database db = await DatabaseHelper.getDatabase();
 
-    return await db.query(
-      'alertas',
-      orderBy: 'id DESC',
-    );
+    return await db.query('alertas', orderBy: 'id DESC');
   }
 
   Future<void> salvarObjetivo(String objetivo) async {
@@ -67,13 +62,9 @@ class AuthService {
 
     await db.update(
       'usuarios',
-      {
-        'objetivo': objetivo,
-      },
+      {'objetivo': objetivo},
       where: 'id = ?',
-      whereArgs: [
-        usuarioLogado!['id'],
-      ],
+      whereArgs: [usuarioLogado!['id']],
     );
 
     usuarioLogado!['objetivo'] = objetivo;
@@ -89,14 +80,9 @@ class AuthService {
 
     await db.update(
       'usuarios',
-      {
-        'idade': idade,
-        'peso': peso,
-      },
+      {'idade': idade, 'peso': peso},
       where: 'id = ?',
-      whereArgs: [
-        usuarioLogado!['id'],
-      ],
+      whereArgs: [usuarioLogado!['id']],
     );
 
     usuarioLogado!['idade'] = idade;
@@ -110,13 +96,9 @@ class AuthService {
 
     await db.update(
       'usuarios',
-      {
-        'diasSemana': dias,
-      },
+      {'diasSemana': dias},
       where: 'id = ?',
-      whereArgs: [
-        usuarioLogado!['id'],
-      ],
+      whereArgs: [usuarioLogado!['id']],
     );
 
     usuarioLogado!['diasSemana'] = dias;
@@ -130,15 +112,11 @@ class AuthService {
     final resultado = await db.query(
       'usuarios',
       where: 'id = ?',
-      whereArgs: [
-        usuarioLogado!['id'],
-      ],
+      whereArgs: [usuarioLogado!['id']],
     );
 
     if (resultado.isNotEmpty) {
-      usuarioLogado = Map<String, dynamic>.from(
-        resultado.first,
-      );
+      usuarioLogado = Map<String, dynamic>.from(resultado.first);
     }
   }
 
@@ -154,9 +132,7 @@ class AuthService {
     await db.delete(
       'plano',
       where: 'usuarioId = ?',
-      whereArgs: [
-        usuarioLogado!['id'],
-      ],
+      whereArgs: [usuarioLogado!['id']],
     );
   }
 
@@ -169,16 +145,13 @@ class AuthService {
 
     final Database db = await DatabaseHelper.getDatabase();
 
-    await db.insert(
-      'plano',
-      {
-        'usuarioId': usuarioLogado!['id'],
-        'dia': dia,
-        'treino': treino,
-        'exercicios': exercicios,
-        'concluido': 0,
-      },
-    );
+    await db.insert('plano', {
+      'usuarioId': usuarioLogado!['id'],
+      'dia': dia,
+      'treino': treino,
+      'exercicios': exercicios,
+      'concluido': 0,
+    });
   }
 
   Future<List<Map<String, dynamic>>> carregarPlano() async {
@@ -191,9 +164,7 @@ class AuthService {
     return await db.query(
       'plano',
       where: 'usuarioId = ?',
-      whereArgs: [
-        usuarioLogado!['id'],
-      ],
+      whereArgs: [usuarioLogado!['id']],
       orderBy: 'id',
     );
   }
@@ -205,51 +176,39 @@ class AuthService {
 
     await db.update(
       'plano',
-      {
-        'concluido': 1,
-      },
+      {'concluido': 1},
       where: 'id = ?',
       whereArgs: [id],
     );
 
-    final treino = await db.query(
-      'plano',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    final treino = await db.query('plano', where: 'id = ?', whereArgs: [id]);
 
     if (treino.isNotEmpty) {
-      await db.insert(
-        'historico',
-        {
-          'usuarioId': usuarioLogado!['id'],
-          'treino': treino.first['treino'],
-          'data': DateTime.now().toIso8601String(),
-        },
-      );
+      await db.insert('historico', {
+        'usuarioId': usuarioLogado!['id'],
+        'treino': treino.first['treino'],
+        'data': DateTime.now().toIso8601String(),
+      });
     }
   }
 
   Future<List<Map<String, dynamic>>> carregarHistorico() async {
-  if (usuarioLogado == null) {
-    return [];
+    if (usuarioLogado == null) {
+      return [];
+    }
+
+    final Database db = await DatabaseHelper.getDatabase();
+
+    return await db.query(
+      'historico',
+      where: 'usuarioId = ?',
+      whereArgs: [usuarioLogado!['id']],
+      orderBy: 'id DESC',
+    );
   }
 
-  final Database db = await DatabaseHelper.getDatabase();
-
-  return await db.query(
-    'historico',
-    where: 'usuarioId = ?',
-    whereArgs: [usuarioLogado!['id']],
-    orderBy: 'id DESC',
-  );
-}
-
-  List<Map<String, String>> buscarExercicios(
-    dynamic treino,
-  ) {
-    final String nomeTreino =
-        treino?.toString().toLowerCase() ?? '';
+  List<Map<String, String>> buscarExercicios(dynamic treino) {
+    final String nomeTreino = treino?.toString().toLowerCase() ?? '';
 
     if (nomeTreino.contains('peito')) {
       return [
@@ -320,8 +279,7 @@ class AuthService {
       ];
     }
 
-    if (nomeTreino.contains('hiit') ||
-        nomeTreino.contains('tabata')) {
+    if (nomeTreino.contains('hiit') || nomeTreino.contains('tabata')) {
       return [
         {
           'nome': 'Polichinelo',
@@ -351,12 +309,7 @@ class AuthService {
         'repeticoes': '12',
         'descanso': '60s',
       },
-      {
-        'nome': 'Flexão',
-        'series': '3',
-        'repeticoes': '10',
-        'descanso': '45s',
-      },
+      {'nome': 'Flexão', 'series': '3', 'repeticoes': '10', 'descanso': '45s'},
       {
         'nome': 'Prancha',
         'series': '3',
@@ -381,10 +334,7 @@ class AuthService {
       return valor;
     }
 
-    return int.tryParse(
-          valor?.toString() ?? '',
-        ) ??
-        0;
+    return int.tryParse(valor?.toString() ?? '') ?? 0;
   }
 
   static double get peso {
@@ -398,10 +348,7 @@ class AuthService {
       return valor.toDouble();
     }
 
-    return double.tryParse(
-          valor.toString(),
-        ) ??
-        0.0;
+    return double.tryParse(valor.toString()) ?? 0.0;
   }
 
   static int get diasSemana {
@@ -411,9 +358,6 @@ class AuthService {
       return valor;
     }
 
-    return int.tryParse(
-          valor?.toString() ?? '',
-        ) ??
-        0;
+    return int.tryParse(valor?.toString() ?? '') ?? 0;
   }
 }
