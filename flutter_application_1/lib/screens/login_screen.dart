@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
+// Tela de login do aplicativo.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -9,12 +10,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // Controladores dos campos de usuário e senha.
   final TextEditingController usuarioController = TextEditingController();
-
   final TextEditingController senhaController = TextEditingController();
 
+  // Controla se a senha será exibida ou ocultada.
   bool mostrarSenha = false;
 
+  // Cor principal utilizada na interface.
   final Color verde = const Color(0xFFC6FF00);
 
   @override
@@ -29,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 20),
 
+                // Logo do aplicativo.
                 Container(
                   width: 70,
                   height: 70,
@@ -50,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 20),
 
+                // Nome do aplicativo.
                 RichText(
                   text: TextSpan(
                     children: [
@@ -80,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 40),
 
+                // Alterna entre a tela de login e cadastro.
                 Container(
                   height: 55,
                   decoration: BoxDecoration(
@@ -139,6 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 8),
 
+                // Campo para digitar o nome de usuário.
                 TextField(
                   controller: usuarioController,
                   style: const TextStyle(color: Colors.white),
@@ -169,6 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 8),
 
+                // Campo para digitar a senha.
                 TextField(
                   controller: senhaController,
                   obscureText: !mostrarSenha,
@@ -176,9 +184,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     hintText: "Mínimo 4 caracteres",
                     hintStyle: const TextStyle(color: Colors.grey),
+
+                    // Botão para mostrar ou ocultar a senha.
                     suffixIcon: IconButton(
                       icon: Icon(
-                        mostrarSenha ? Icons.visibility_off : Icons.visibility,
+                        mostrarSenha
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                         color: Colors.grey,
                       ),
                       onPressed: () {
@@ -187,6 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         });
                       },
                     ),
+
                     filled: true,
                     fillColor: const Color(0xff151515),
                     border: OutlineInputBorder(
@@ -195,8 +208,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 25),
 
+                // Botão para realizar o login.
                 SizedBox(
                   width: double.infinity,
                   height: 60,
@@ -209,6 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onPressed: () async {
+                      // Verifica se o usuário e a senha estão corretos.
                       bool usuarioExiste = await AuthService().login(
                         usuarioController.text,
                         senhaController.text,
@@ -217,11 +233,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (!mounted) return;
 
                       if (usuarioExiste) {
-                        Navigator.pushReplacementNamed(context, '/objective');
+                        // Login realizado com sucesso.
+                        Navigator.pushReplacementNamed(
+                          context,
+                          '/objective',
+                        );
                       } else {
+                        // Exibe mensagem de erro.
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Usuário ou senha incorretos'),
+                            content: Text(
+                              'Usuário ou senha incorretos',
+                            ),
                           ),
                         );
                       }
@@ -238,6 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 20),
 
+                // Informação sobre onde os dados são armazenados.
                 const Text(
                   "Dados salvos localmente no dispositivo.",
                   style: TextStyle(color: Colors.grey),

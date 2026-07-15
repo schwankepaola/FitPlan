@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
+// Tela onde o usuário escolhe o objetivo do treino.
 class ObjectiveScreen extends StatefulWidget {
   const ObjectiveScreen({super.key});
 
@@ -9,22 +10,32 @@ class ObjectiveScreen extends StatefulWidget {
 }
 
 class _ObjectiveScreenState extends State<ObjectiveScreen> {
+
+  // Armazena o objetivo selecionado pelo usuário.
   String objetivoSelecionado = '';
 
+  // Cor principal utilizada na interface.
   final Color verde = const Color(0xFFC6FF00);
 
+  // Método que cria um card para cada objetivo disponível.
   Widget cardObjetivo(String titulo, String subtitulo, IconData icone) {
+
+    // Verifica se este objetivo está selecionado.
     bool selecionado = objetivoSelecionado == titulo;
 
     return GestureDetector(
+
+      // Atualiza o objetivo escolhido.
       onTap: () {
         setState(() {
           objetivoSelecionado = titulo;
         });
       },
+
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
+
         decoration: BoxDecoration(
           color: const Color(0xff111111),
           borderRadius: BorderRadius.circular(16),
@@ -33,6 +44,7 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
             width: 2,
           ),
         ),
+
         child: Row(
           children: [
             Container(
@@ -43,7 +55,9 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
               ),
               child: Icon(icone, color: Colors.grey),
             ),
+
             const SizedBox(width: 15),
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +70,10 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(subtitulo, style: const TextStyle(color: Colors.grey)),
+                  Text(
+                    subtitulo,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
                 ],
               ),
             ),
@@ -70,14 +87,18 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(28),
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               const SizedBox(height: 15),
 
+              // Logo do aplicativo.
               RichText(
                 text: TextSpan(
                   children: [
@@ -108,6 +129,7 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
 
               const SizedBox(height: 30),
 
+              // Barra indicando o progresso do cadastro.
               Row(
                 children: [
                   Expanded(child: Container(height: 4, color: verde)),
@@ -138,6 +160,7 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
 
               const SizedBox(height: 30),
 
+              // Opções de objetivos disponíveis.
               cardObjetivo(
                 "Ganhar Massa",
                 "Hipertrofia e força",
@@ -158,9 +181,11 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
 
               const Spacer(),
 
+              // Botão para salvar o objetivo e continuar.
               SizedBox(
                 width: double.infinity,
                 height: 60,
+
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: verde,
@@ -169,33 +194,53 @@ class _ObjectiveScreenState extends State<ObjectiveScreen> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
+
                   onPressed: () async {
+
+                    // Verifica se algum objetivo foi selecionado.
                     if (objetivoSelecionado.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Selecione um objetivo para continuar'),
+                          content: Text(
+                            'Selecione um objetivo para continuar',
+                          ),
                         ),
                       );
                       return;
                     }
 
                     try {
-                      await AuthService().salvarObjetivo(objetivoSelecionado);
+
+                      // Salva o objetivo escolhido.
+                      await AuthService().salvarObjetivo(
+                        objetivoSelecionado,
+                      );
 
                       if (!mounted) return;
 
+                      // Avança para a próxima tela.
                       Navigator.pushNamed(context, '/user_data');
+
                     } catch (e) {
+
+                      // Exibe uma mensagem caso ocorra algum erro.
                       if (!mounted) return;
 
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Erro ao salvar objetivo: $e")),
+                        SnackBar(
+                          content: Text(
+                            "Erro ao salvar objetivo: $e",
+                          ),
+                        ),
                       );
                     }
                   },
+
                   child: const Text(
                     "CONTINUAR",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

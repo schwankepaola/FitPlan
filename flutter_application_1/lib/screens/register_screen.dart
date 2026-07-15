@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
+// Tela de cadastro de novos usuários.
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -9,13 +10,17 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  // Controladores dos campos de usuário e senha.
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
 
+  // Chave utilizada para validar o formulário.
   final _formKey = GlobalKey<FormState>();
 
+  // Cor principal da interface.
   final Color verde = const Color(0xFFC6FF00);
 
+  // Controla se a senha será exibida ou ocultada.
   bool mostrarSenha = false;
 
   @override
@@ -26,12 +31,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 25),
+
+            // Formulário de cadastro.
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
                   const SizedBox(height: 10),
 
+                  // Logo do aplicativo.
                   Container(
                     width: 70,
                     height: 70,
@@ -53,6 +61,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   const SizedBox(height: 20),
 
+                  // Nome do aplicativo.
                   RichText(
                     text: TextSpan(
                       children: [
@@ -85,6 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   const SizedBox(height: 35),
 
+                  // Alterna entre as telas de login e cadastro.
                   Container(
                     height: 55,
                     decoration: BoxDecoration(
@@ -132,6 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   campoTitulo("USUÁRIO"),
 
+                  // Campo para digitar o nome de usuário.
                   TextFormField(
                     controller: nameController,
                     style: const TextStyle(color: Colors.white),
@@ -148,6 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   campoTitulo("SENHA"),
 
+                  // Campo para digitar a senha.
                   TextFormField(
                     controller: passwordController,
                     obscureText: !mostrarSenha,
@@ -164,6 +176,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: campoDecoracao(
                       "Mínimo 4 caracteres",
                     ).copyWith(
+
+                      // Botão para mostrar ou ocultar a senha.
                       suffixIcon: IconButton(
                         icon: Icon(
                           mostrarSenha
@@ -182,19 +196,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   const SizedBox(height: 25),
 
+                  // Botão para criar a conta.
                   SizedBox(
                     width: double.infinity,
                     height: 60,
                     child: ElevatedButton.icon(
                       onPressed: () async {
+
+                        // Verifica se os campos foram preenchidos corretamente.
                         if (!_formKey.currentState!.validate()) return;
 
                         try {
+
+                          // Cadastra o usuário.
                           await AuthService().cadastrar(
                             nameController.text,
                             passwordController.text,
                           );
 
+                          // Realiza o login automaticamente.
                           await AuthService().login(
                             nameController.text,
                             passwordController.text,
@@ -202,11 +222,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           if (!mounted) return;
 
+                          // Avança para a próxima etapa.
                           Navigator.pushReplacementNamed(
                             context,
                             '/objective',
                           );
+
                         } catch (e) {
+
+                          // Exibe uma mensagem caso ocorra algum erro.
                           if (!mounted) return;
 
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -239,6 +263,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   const SizedBox(height: 20),
 
+                  // Informação sobre o armazenamento dos dados.
                   const Text(
                     "Dados salvos localmente no dispositivo.",
                     style: TextStyle(color: Colors.grey),
@@ -252,6 +277,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  // Cria o título utilizado acima dos campos do formulário.
   Widget campoTitulo(String texto) {
     return Align(
       alignment: Alignment.centerLeft,
@@ -268,6 +294,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  // Define a aparência padrão dos campos de texto.
   InputDecoration campoDecoracao(String hint) {
     return InputDecoration(
       hintText: hint,

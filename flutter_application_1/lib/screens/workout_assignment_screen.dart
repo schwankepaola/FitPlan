@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
+// Tela onde o usuário escolhe em quais dias da semana fará cada treino.
 class WorkoutAssignmentScreen extends StatefulWidget {
   const WorkoutAssignmentScreen({super.key});
 
@@ -32,8 +33,10 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
 
   Map<String, String> planoSemana = {};
 
+  // Guarda qual treino está sendo editado.
   int treinoAtual = 0;
 
+  // Lista com todos os treinos e seus respectivos exercícios.
   final List<Map<String, dynamic>> treinos = [
     {
       "nome": "Peito & Tríceps",
@@ -82,11 +85,15 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
 
   final List<String> dias = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
+  // Armazena o dia escolhido para cada treino.
   final Map<int, String> diasEscolhidos = {};
 
   @override
   Widget build(BuildContext context) {
+
+    // Recebe a quantidade de dias escolhida na tela anterior.
     quantidadeDias = ModalRoute.of(context)!.settings.arguments as int;
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -110,6 +117,8 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
               ),
 
               const SizedBox(height: 20),
+
+              // Mostra os treinos e o dia escolhido para cada um.
               ...List.generate(
                 quantidadeDias,
                 (index) => Padding(
@@ -138,6 +147,7 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
 
               const SizedBox(height: 20),
 
+              // Botões para selecionar qual treino será configurado.
               Row(
                 children: List.generate(quantidadeDias, (index) {
                   final ativo = treinoAtual == index;
@@ -179,6 +189,7 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
 
               const SizedBox(height: 20),
 
+              // Exibe os exercícios do treino selecionado.
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
@@ -227,6 +238,7 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
 
               const SizedBox(height: 10),
 
+              // Permite escolher o dia da semana para o treino atual.
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -262,6 +274,7 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
 
               const SizedBox(height: 20),
 
+              // Exibe um resumo do plano antes de salvar.
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -313,6 +326,7 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
 
               const SizedBox(height: 20),
 
+              // Salva o plano de treino e abre a tela inicial.
               SizedBox(
                 width: double.infinity,
                 height: 55,
@@ -322,8 +336,11 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
                     foregroundColor: Colors.black,
                   ),
                   onPressed: () async {
+
+                    // Remove o plano anterior.
                     await AuthService().limparPlano();
 
+                    // Salva todos os treinos escolhidos.
                     for (int i = 0; i < quantidadeDias; i++) {
                       if (diasEscolhidos[i] != null) {
                         await AuthService().salvarTreino(
@@ -336,6 +353,7 @@ class _WorkoutAssignmentScreenState extends State<WorkoutAssignmentScreen> {
 
                     if (!mounted) return;
 
+                    // Vai para a tela principal do aplicativo.
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       '/home',

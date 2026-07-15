@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
+// Tela de configurações e perfil do usuário.
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    // Cor principal utilizada na interface.
     final Color verde = const Color(0xFFC6FF00);
 
+    // Obtém os dados do usuário salvos no AuthService.
     final String nome =
         AuthService.nome.isEmpty ? "paola" : AuthService.nome;
 
@@ -30,6 +34,7 @@ class ProfileScreen extends StatelessWidget {
 
             children: [
 
+              // Cabeçalho da tela com título e botão para fechar.
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
@@ -72,6 +77,7 @@ class ProfileScreen extends StatelessWidget {
 
               const SizedBox(height:35),
 
+              // Card com as informações da conta.
               Container(
 
                 width: double.infinity,
@@ -112,6 +118,7 @@ class ProfileScreen extends StatelessWidget {
 
               const SizedBox(height:18),
 
+              // Card com os dados do plano atual.
               Container(
 
                 width: double.infinity,
@@ -144,12 +151,14 @@ class ProfileScreen extends StatelessWidget {
                         color: Colors.white54,
                         fontSize: 15,
                       ),
-                    ),                  ],
+                    ),
+                  ],
                 ),
               ),
 
               const SizedBox(height: 28),
 
+              // Botão para apagar o plano atual e criar um novo.
               SizedBox(
                 width: double.infinity,
                 height: 58,
@@ -166,8 +175,11 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () async {
+
+                    // Remove o plano salvo.
                     await AuthService().limparPlano();
 
+                    // Retorna para a tela de escolha do objetivo.
                     if (context.mounted) {
                       Navigator.pushNamedAndRemoveUntil(
                         context,
@@ -189,6 +201,7 @@ class ProfileScreen extends StatelessWidget {
 
               const SizedBox(height: 18),
 
+              // Botão para sair da conta.
               SizedBox(
                 width: double.infinity,
                 height: 58,
@@ -213,6 +226,8 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
+
+                    // Remove o usuário logado e retorna para a tela de login.
                     AuthService.usuarioLogado = null;
 
                     Navigator.pushNamedAndRemoveUntil(
@@ -226,6 +241,7 @@ class ProfileScreen extends StatelessWidget {
 
               const Spacer(),
 
+              // Nome do aplicativo exibido no rodapé.
               Center(
                 child: Text(
                   "FITPLAN",

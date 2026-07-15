@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
+// Tela onde o usuário informa sua idade e peso.
 class UserDataScreen extends StatefulWidget {
   const UserDataScreen({super.key});
 
@@ -9,9 +10,12 @@ class UserDataScreen extends StatefulWidget {
 }
 
 class _UserDataScreenState extends State<UserDataScreen> {
+
+  // Controladores dos campos de idade e peso.
   final idadeController = TextEditingController();
   final pesoController = TextEditingController();
 
+  // Cor principal utilizada na interface.
   final Color verde = const Color(0xFFC6FF00);
 
   @override
@@ -27,6 +31,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
               children: [
                 const SizedBox(height: 20),
 
+                // Logo do aplicativo.
                 Center(
                   child: RichText(
                     text: TextSpan(
@@ -61,6 +66,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
 
                 const SizedBox(height: 50),
 
+                // Barra indicando o progresso do cadastro.
                 Row(
                   children: [
                     Expanded(
@@ -125,6 +131,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
 
                 const SizedBox(height: 10),
 
+                // Campo para informar a idade.
                 TextField(
                   controller: idadeController,
                   keyboardType: TextInputType.number,
@@ -153,6 +160,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
 
                 const SizedBox(height: 10),
 
+                // Campo para informar o peso.
                 TextField(
                   controller: pesoController,
                   keyboardType: TextInputType.number,
@@ -183,6 +191,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
 
                     const SizedBox(width: 20),
 
+                    // Botão para salvar os dados e continuar.
                     Expanded(
                       child: SizedBox(
                         height: 60,
@@ -195,6 +204,8 @@ class _UserDataScreenState extends State<UserDataScreen> {
                             ),
                           ),
                           onPressed: () async {
+
+                            // Verifica se os campos foram preenchidos.
                             if (idadeController.text.isEmpty ||
                                 pesoController.text.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -206,6 +217,8 @@ class _UserDataScreenState extends State<UserDataScreen> {
                             }
 
                             try {
+
+                              // Salva idade e peso do usuário.
                               await AuthService().salvarDadosUsuario(
                                 idade: int.parse(idadeController.text),
                                 peso: double.parse(
@@ -215,8 +228,12 @@ class _UserDataScreenState extends State<UserDataScreen> {
 
                               if (!mounted) return;
 
+                              // Avança para a tela de escolha dos dias de treino.
                               Navigator.pushNamed(context, '/days');
+
                             } catch (e) {
+
+                              // Exibe uma mensagem caso ocorra algum erro.
                               if (!mounted) return;
 
                               ScaffoldMessenger.of(context).showSnackBar(

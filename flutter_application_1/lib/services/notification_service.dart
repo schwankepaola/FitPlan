@@ -1,41 +1,46 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+// Classe responsável por gerenciar as notificações do aplicativo.
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
 
-  // 📌 controle simples de treino do dia
+  // Armazena a data do último treino realizado.
   static DateTime? _lastWorkoutDate;
 
+  // Indica se as notificações estão ativadas.
   static bool _notificationsEnabled = false;
 
-static bool get notificationsEnabled => _notificationsEnabled;
-static Future<void> init() async {
-  const AndroidInitializationSettings androidInit =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
+  static bool get notificationsEnabled => _notificationsEnabled;
 
-  const WindowsInitializationSettings windowsInit =
-      WindowsInitializationSettings(
-        appName: 'FitPlan',
-        appUserModelId: 'com.fitplan.app',
-        guid: 'd8b7f8c0-1234-4567-8901-abcdef123456',
-      );
+  // Inicializa o sistema de notificações.
+  static Future<void> init() async {
+    const AndroidInitializationSettings androidInit =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  const InitializationSettings settings =
-      InitializationSettings(
-        android: androidInit,
-        windows: windowsInit,
-      );
+    const WindowsInitializationSettings windowsInit =
+        WindowsInitializationSettings(
+          appName: 'FitPlan',
+          appUserModelId: 'com.fitplan.app',
+          guid: 'd8b7f8c0-1234-4567-8901-abcdef123456',
+        );
 
-  await _notifications.initialize(settings);
+    const InitializationSettings settings =
+        InitializationSettings(
+          android: androidInit,
+          windows: windowsInit,
+        );
 
-  await _notifications
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.requestNotificationsPermission();
-}
+    await _notifications.initialize(settings);
 
-  // 🔥 TESTE
+    // Solicita permissão para enviar notificações.
+    await _notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+  }
+
+  // Envia uma notificação de teste.
   static Future<void> showTestNotification() async {
     const androidDetails = AndroidNotificationDetails(
       'test_channel',
@@ -54,7 +59,7 @@ static Future<void> init() async {
     );
   }
 
-  // 🔥 BOAS-VINDAS
+  // Envia uma notificação de boas-vindas.
   static Future<void> showWelcomeNotification() async {
     const androidDetails = AndroidNotificationDetails(
       'welcome_channel',
@@ -73,12 +78,12 @@ static Future<void> init() async {
     );
   }
 
-  // 📌 MARCAR TREINO COMO FEITO
+  // Registra que o usuário concluiu o treino do dia.
   static void markWorkoutDone() {
     _lastWorkoutDate = DateTime.now();
   }
 
-  // 🧠 NOTIFICAÇÃO INTELIGENTE
+  // Envia um lembrete apenas se o treino ainda não foi realizado hoje.
   static Future<void> smartDailyReminder() async {
     final now = DateTime.now();
 
@@ -88,7 +93,7 @@ static Future<void> init() async {
         _lastWorkoutDate!.day == now.day;
 
     if (didWorkoutToday) {
-      return; // já treinou → não notifica
+      return;
     }
 
     const androidDetails = AndroidNotificationDetails(
@@ -108,55 +113,58 @@ static Future<void> init() async {
     );
   }
 
-  // 🔥 DIÁRIA (se quiser usar depois)
+  // Envia um lembrete diário com uma mensagem motivacional.
   static Future<void> showDailyReminder() async {
-  const AndroidNotificationDetails androidDetails =
-      AndroidNotificationDetails(
-    'daily_channel',
-    'Lembretes de treino',
-    channelDescription: 'Lembretes diários do FitPlan',
-    importance: Importance.max,
-    priority: Priority.high,
-  );
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'daily_channel',
+      'Lembretes de treino',
+      channelDescription: 'Lembretes diários do FitPlan',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
 
-  const NotificationDetails details =
-      NotificationDetails(
-    android: androidDetails,
-  );
+    const NotificationDetails details =
+        NotificationDetails(
+      android: androidDetails,
+    );
 
-  final mensagens = [
-    "💪 Seu treino de hoje está esperando por você!",
-    "🔥 Bora manter a sequência! Não falte hoje.",
-    "🏋️ Cinco minutos já fazem diferença.",
-    "🚀 Seu objetivo está cada vez mais perto.",
-    "❤️ Seu corpo agradece. Hora do treino!",
-    "👊 Vamos manter a consistência.",
-    "⭐ Não quebre sua sequência hoje.",
-  ];
+    final mensagens = [
+      "💪 Seu treino de hoje está esperando por você!",
+      "🔥 Bora manter a sequência! Não falte hoje.",
+      "🏋️ Cinco minutos já fazem diferença.",
+      "🚀 Seu objetivo está cada vez mais perto.",
+      "❤️ Seu corpo agradece. Hora do treino!",
+      "👊 Vamos manter a consistência.",
+      "⭐ Não quebre sua sequência hoje.",
+    ];
 
-  final indice =
-      DateTime.now().day % mensagens.length;
+    // Seleciona uma mensagem diferente a cada dia.
+    final indice = DateTime.now().day % mensagens.length;
 
-  await _notifications.show(
-    10,
-    "FITPLAN",
-    mensagens[indice],
-    details,
-  );
-}
-static Future<void> setNotificationsEnabled(bool value) async {
-  _notificationsEnabled = value;
-
-  if (value) {
-    await showDailyReminder();
-  } else {
-    await _notifications.cancelAll();
+    await _notifications.show(
+      10,
+      "FITPLAN",
+      mensagens[indice],
+      details,
+    );
   }
-}
 
-static Future<void> scheduleDailyReminder() async {
-  if (!_notificationsEnabled) return;
+  // Ativa ou desativa as notificações.
+  static Future<void> setNotificationsEnabled(bool value) async {
+    _notificationsEnabled = value;
 
-  await showDailyReminder();
-}
+    if (value) {
+      await showDailyReminder();
+    } else {
+      await _notifications.cancelAll();
+    }
+  }
+
+  // Agenda o lembrete diário caso as notificações estejam ativadas.
+  static Future<void> scheduleDailyReminder() async {
+    if (!_notificationsEnabled) return;
+
+    await showDailyReminder();
+  }
 }
